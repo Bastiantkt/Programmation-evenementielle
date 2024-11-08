@@ -1,0 +1,12 @@
+QLineEdit
+{
+    box-shadow: 1px 1px 30px black;
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 10
+}
+
+QLabel
+{
+    text-shadow: 1px 1px 30px black;
+}
