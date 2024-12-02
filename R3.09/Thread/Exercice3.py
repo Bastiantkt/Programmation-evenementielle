@@ -1,11 +1,23 @@
-from concurrent.futures import ThreadPoolExecutor
 import time
+import concurrent.futures
+import requests
 
-def countdown_task(name, start):
-    for i in range(start, 0, -1):
-        print(f"{name} : {i}")
-        time.sleep(0.2)
+img_urls = [
+    'https://cdn.pixabay.com/photo/2016/04/04/14/12/monitor-1307227_1280.jpg',
+    'https://cdn.pixabay.com/photo/2018/07/14/11/33/earth-3537401_1280.jpg',
+    'https://cdn.pixabay.com/photo/2016/06/09/20/38/woman-1446557_1280.jpg',
+]
 
-with ThreadPoolExecutor(max_workers=2) as executor:
-    executor.submit(countdown_task, "thread 1", 5)
-    executor.submit(countdown_task, "thread 2", 3)
+def download_image(img_url):
+    img_bytes = requests.get(img_url).content
+    img_name = img_url.split('/')[-1]
+    with open(img_name, 'wb') as img_file:
+        img_file.write(img_bytes)
+    print(f"{img_name} a été téléchargée")
+
+if __name__ == '__main__':
+    start = time.perf_counter()
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.map(download_image, img_urls)
+    end = time.perf_counter()
+    print(f"Tâches terminées en {round(end - start, 2)} secondes")
