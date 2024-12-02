@@ -1,0 +1,29 @@
+QLineEdit {
+    border: 1px solid rgba(60, 60, 60, 0.1);
+    padding: 7px;
+    border-radius: 10px; 
+}
+
+QPushButton {
+    border: 1px solid rgba(60, 60, 60, 0.8);
+    padding: 7px;
+    border-radius: 10px;
+}
+
+QTextEdit {
+    border: 1px solid rgba(60, 60, 60, 0.8);
+    padding: 7px;
+    border-radius: 10px;
+}
+
+QLineEdit:hover {
+    border: 1px solid rgba(255, 255, 255, 1);
+}
+
+QPushButton:hover {
+    border: 1px solid rgba(255, 255, 255, 1);
+}
+
+QTextEdit:hover {
+    border: 1px solid rgba(255, 255, 255, 1);
+}
