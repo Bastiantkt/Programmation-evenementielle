@@ -57,13 +57,13 @@ class Interface_Application(QtWidgets.QWidget):
         port_serveur = int(self.port_input.text())
 
         options = QFileDialog.Option.DontUseNativeDialog
-        file_path, _ = QFileDialog.getOpenFileName(self, "Sélectionnez le programme", "", "Tous les fichiers (*)", options=options)
-        if not file_path:
+        chemin_fichier, _ = QFileDialog.getOpenFileName(self, "Sélectionnez le programme", "", "Tous les fichiers (*)", options=options)
+        if not chemin_fichier:
             self.envoie_button.setEnabled(True)
             return
 
         try:
-            with open(file_path, "rb") as f:
+            with open(chemin_fichier, "rb") as f:
                 programme = f.read()
         except Exception as e:
             QMessageBox.critical(self, "Erreur", f"Impossible de lire le fichier : {str(e)}")
@@ -71,7 +71,7 @@ class Interface_Application(QtWidgets.QWidget):
             return
 
         import os
-        _, extension_fichier = os.path.splitext(file_path)
+        _, extension_fichier = os.path.splitext(chemin_fichier)
         language_code = extension_fichier.lower().strip('.')
 
         self.thread = QtCore.QThread()
