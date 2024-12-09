@@ -9,7 +9,7 @@ import psutil
 
 
 # ------------
-# CONFIGURATION LOGGING
+# -CONFIGURATION LOGGING-
 # ------------
 
 logging.basicConfig(
@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 
 # ------------
-#ARGUMENTS
+# -ARGUMENTS-
 # ------------
 
 if len(sys.argv) < 4:
@@ -30,25 +30,25 @@ if len(sys.argv) < 4:
     sys.exit(1)
 
 # ------------
-# ARGUMENTS MAX PROGRAMME
+# -ARGUMENTS MAX PROGRAMME-
 # ------------
 
 MAX_PROGRAMMES = int(sys.argv[4])
 
 # ------------
-# ARGUMENTS UTILISATION CPU 
+# -ARGUMENTS UTILISATION CPU- 
 # ------------
 
 MAX_CPU_USAGE = int(sys.argv[5])
 
 # ------------
-# ARGUMENTS PORT SERVEUR MAITRE
+# -ARGUMENTS PORT SERVEUR MAITRE-
 # ------------
 
 PORT_MAITRE = int(sys.argv[1])
 
 # ------------
-# ARGUMENTS ADRESSES IP / PORT DES SERVEURS AUTRES
+# -ARGUMENTS ADRESSES IP / PORT DES SERVEURS AUTRES-
 # ------------
 
 ips = sys.argv[2].split(',')
@@ -60,7 +60,7 @@ for ip, ports in zip(ips, ports_groupes):
         SERVEUR_AUTRES.append((ip, int(port))) 
 
 # ------------
-# FONCTION DELEGATION AUX AUTRES SERVEURS
+# -FONCTION DELEGATION AUX AUTRES SERVEURS-
 # ------------
 
 def delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme):
@@ -82,14 +82,14 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
     return False
 
 # ------------
-# FONCTION COMPILATION / EXECUTION PROGRAMME
+# -FONCTION COMPILATION / EXECUTION PROGRAMME-
 # ------------
 
 def execution_programme(language_code, fichier, adresse_client, programme=None):
     try:
 
     # ------------
-    # PYTHON
+    # -PYTHON-
     # ------------
 
         if language_code == "py":
@@ -100,7 +100,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
                 text=True
             )
     # ------------
-    # JAVA
+    # -JAVA-
     # ------------
 
         elif language_code == "java":
@@ -115,7 +115,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             os.remove(classname + ".class")
 
     # ------------
-    # C
+    # -C-
     # ------------
 
         elif language_code == "c":
@@ -130,7 +130,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             os.remove(executable_sortie)
     
     # ------------
-    # C++
+    # -C++-
     # ------------    
 
     
@@ -155,7 +155,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         return "", f"Erreur : {str(e)}"
 
 # ------------
-# GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT
+# -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
 # ------------
 
 def gestion_client(socket_client, adresse_client):
@@ -188,14 +188,14 @@ def prepare_fichier(language_code, programme, adresse_client):
     return f"programme_client_{adresse_client[1]}_{threading.get_ident()}.{language_code}"
 
 # ------------
-# GESTION DELEGATION AUX SERVEURS AUTRES
+# -GESTION DELEGATION AUX SERVEURS AUTRES-
 # ------------
 
 def delegation_programme():
     return threading.active_count() - 1 < MAX_PROGRAMMES and psutil.cpu_percent(interval=1) < MAX_CPU_USAGE
 
 # ------------
-# GESTION SAUVEGARDE / LANCEMENT PROGRAMME
+# -GESTION SAUVEGARDE / LANCEMENT PROGRAMME-
 # ------------
 
 def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
@@ -205,7 +205,7 @@ def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
     envoie_sortie(socket_maitre, stdout, stderr)
 
 # ------------
-# FONCTION RENVOIE DU RESULTAT
+# -FONCTION RENVOIE DU RESULTAT-
 # ------------
 
 def envoie_sortie(socket_client, stdout, stderr):
@@ -217,7 +217,7 @@ def envoie_erreur(socket_client, message):
     socket_client.sendall(message.encode())
 
 # ------------
-# FONCTION NETTOYAGE FICHIER TEMPORAIRE
+# -FONCTION NETTOYAGE FICHIER TEMPORAIRE-
 # ------------
 
 def nettoyage(socket_client, fichier):
@@ -227,7 +227,7 @@ def nettoyage(socket_client, fichier):
 
 
 # ------------
-# MAIN 
+# -MAIN- 
 # ------------
 
 def main():
