@@ -7,7 +7,7 @@ import logging
 import re
 
 # ------------
-# CONFIGURATION LOGGING
+# -CONFIGURATION LOGGING-
 # ------------
 
 logging.basicConfig(
@@ -19,7 +19,7 @@ logging.basicConfig(
 )
 
 # ------------
-#ARGUMENTS
+# -ARGUMENTS-
 # -----------
 
 
@@ -29,26 +29,26 @@ if len(sys.argv) < 3:
     sys.exit(1)
 
 # ------------
-# MAX PROGRAMME
+# -MAX PROGRAMME-
 # ------------
 
 MAX_PROGRAMS = int(sys.argv[1])
 
 # ------------
-# PORT
+# -PORT-
 # ------------
 
 PORT = int(sys.argv[2])
 
 # ------------
-# FONCTION COMPILATION / EXECUTION PROGRAMME
+# -FONCTION COMPILATION / EXECUTION PROGRAMME-
 # ------------
 
 def execution_programme(language_code, fichier, adresse_maitre, programme=None):
     try:
 
     # ------------
-    # PYTHON
+    # -PYTHON-
     # ------------
 
         if language_code == "py":
@@ -59,7 +59,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
                 text=True
             )
     # ------------
-    # JAVA
+    # -JAVA-
     # ------------
 
         elif language_code == "java":
@@ -74,7 +74,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
             os.remove(classname + ".class")
 
     # ------------
-    # C
+    # -C-
     # ------------
 
         elif language_code == "c":
@@ -89,7 +89,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
             os.remove(executable_sortie)
     
     # ------------
-    # C++
+    # -C++-
     # ------------    
 
     
@@ -113,7 +113,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
     except Exception as e:
         return "", f"Erreur : {str(e)}"
     # ------------
-    # GESTION ENVOIE / RECEPTION : FICHIER SERVEUR MAITRE
+    # -GESTION ENVOIE / RECEPTION : FICHIER SERVEUR MAITRE-
     # ------------  
 
 def gestion_maitre(socket_maitre, adresse_maitre):
@@ -145,7 +145,7 @@ def prepare_fichier(language_code, programme, adresse_maitre):
     return f"programme_client_{adresse_maitre[1]}_{threading.get_ident()}.{language_code}"
 
 # ------------
-# GESTION SAUVEGARDE / LANCEMENT PROGRAMME
+# -GESTION SAUVEGARDE / LANCEMENT PROGRAMME-
 # ------------
 
 def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
@@ -155,7 +155,7 @@ def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
     envoie_sortie(socket_maitre, stdout, stderr)
 
 # ------------
-# FONCTION RENVOIE DU RESULTAT
+# -FONCTION RENVOIE DU RESULTAT-
 # ------------
 
 def envoie_sortie(socket_maitre, stdout, stderr):
@@ -167,7 +167,7 @@ def envoie_erreur(socket_maitre, message):
     socket_maitre.sendall(message.encode())
 
 # ------------
-# FONCTION NETTOYAGE FICHIER TEMPORAIRE
+# -FONCTION NETTOYAGE FICHIER TEMPORAIRE-
 # ------------
 
 def nettoyage(socket_maitre, fichier):
@@ -175,7 +175,7 @@ def nettoyage(socket_maitre, fichier):
     if fichier and os.path.exists(fichier): os.remove(fichier)
 
 # ------------
-# MAIN 
+# -MAIN-      
 # ------------
 
 def main():
