@@ -63,18 +63,18 @@ SERVEUR_AUTRES = [(str(sys.argv[2]), port) for port in PORT_AUTRES]
 # FONCTION DELEGATION AUX AUTRES SERVEURS
 # ------------
 
-def delegate_to_others(socket_client, adresse_client, language_code, taille_programme, programme):
-    for server_ip, server_port in SERVEUR_AUTRES:
+def delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme):
+    for ip_serveur_autres, port_serveur_autres in SERVEUR_AUTRES:
         try:
-            others_socket = socket.create_connection((server_ip, server_port))
-            others_socket.sendall(f"{language_code}:{taille_programme}".encode())
-            if others_socket.recv(1024).decode() == "HEADER_RECUE":
-                others_socket.sendall(programme)
+            socket_autres = socket.create_connection((ip_serveur_autres, port_serveur_autres))
+            socket_autres.sendall(f"{language_code}:{taille_programme}".encode())
+            if socket_autres.recv(1024).decode() == "HEADER_RECUE":
+                socket_autres.sendall(programme)
                 while True:
-                    response = others_socket.recv(4096)
+                    response = socket_autres.recv(4096)
                     if not response: break
                     socket_client.sendall(response)
-                others_socket.close()
+                socket_autres.close()
                 return True
         except: continue
     return False
@@ -83,46 +83,48 @@ def delegate_to_others(socket_client, adresse_client, language_code, taille_prog
 # FONCTION COMPILATION / EXECUTION PROGRAMME
 # ------------
 
-def execution_programme(language_code, nomdufichier, adresse_client, programme=None):
-    stdout, stderr = "", ""
+def execution_programme(language_code, fichier, adresse_client, programme=None):
+    try:
 
     # ------------
     # PYTHON
     # ------------
 
-    if language_code == "py":
-        execution = subprocess.Popen(['python3', nomdufichier], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        stdout, stderr = execution.communicate()
-
+        if language_code == "py":
+            resultat_programme = subprocess.run(
+                ['python3', fichier],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
     # ------------
     # JAVA
     # ------------
 
-    elif language_code == "java":
-        if not programme: return "", "Program data is missing."
-        compilation = subprocess.Popen(['javac', nomdufichier], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        compile_stdout, compile_stderr = compilation.communicate()
-        stderr += compile_stderr
-        if not compile_stderr:
-            classname = os.path.splitext(os.path.basename(nomdufichier))[0]
-            execution = subprocess.Popen(['java', classname], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, exec_stderr = execution.communicate()
-            stderr += exec_stderr
+        elif language_code == "java":
+            classname = os.path.splitext(os.path.basename(fichier))[0]
+            subprocess.run(['javac', fichier], check=True)
+            resultat_programme = subprocess.run(
+                ['java', classname],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
             os.remove(classname + ".class")
 
     # ------------
     # C
     # ------------
 
-    elif language_code == "c":
-        executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
-        compilation = subprocess.Popen(['gcc', nomdufichier, '-o', executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        compile_stdout, compile_stderr = compilation.communicate()
-        stderr += compile_stderr
-        if not compile_stderr:
-            execution = subprocess.Popen(['./' + executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, exec_stderr = execution.communicate()
-            stderr += exec_stderr
+        elif language_code == "c":
+            executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
+            resultat_programme = subprocess.run(
+                ['./' + executable_sortie],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
             os.remove(executable_sortie)
     
     # ------------
@@ -130,19 +132,25 @@ def execution_programme(language_code, nomdufichier, adresse_client, programme=N
     # ------------    
 
     
-    elif language_code == "cpp":
-        executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
-        compilation = subprocess.Popen(['g++', nomdufichier, '-o', executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        compile_stdout, compile_stderr = compilation.communicate()
-        stderr += compile_stderr
-        if not compile_stderr:
-            execution = subprocess.Popen(['./' + executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, exec_stderr = execution.communicate()
-            stderr += exec_stderr
+        elif language_code == "cpp":
+            executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
+            resultat_programme = subprocess.run(
+                ['./' + executable_sortie],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
             os.remove(executable_sortie)
-    else:
-        stderr = f"Langage '{language_code}' non supporté."
-    return stdout, stderr
+        else:
+            return "", f"Langage '{language_code}' non supporté."
+
+        return resultat_programme.stdout, resultat_programme.stderr
+
+    except subprocess.CalledProcessError as e:
+        return "", f"Erreur d'exécution : {str(e)}"
+    except Exception as e:
+        return "", f"Erreur : {str(e)}"
 
 # ------------
 # GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT
@@ -155,22 +163,22 @@ def gestion_client(socket_client, adresse_client):
         language_code, taille_programme = header_data.split(':')
         taille_programme = int(taille_programme)
         socket_client.sendall("HEADER_RECUE".encode())
-        programme = reception_data(socket_client, taille_programme)
-        nomdufichier = prepare_nomdufichier(language_code, programme, adresse_client)
-        if not delegation_programme() and delegate_to_others(socket_client, adresse_client, language_code, taille_programme, programme): return
-        sauvegarde_execution(socket_client, language_code, nomdufichier, programme)
+        programme = reception_données(socket_client, taille_programme)
+        fichier = prepare_fichier(language_code, programme, adresse_client)
+        if not delegation_programme() and delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme): return
+        sauvegarde_execution(socket_client, language_code, fichier, programme)
     except Exception as e:
         envoie_erreur(socket_client, f"Erreur : {e}")
     finally:
-        nettoyage(socket_client, nomdufichier)
+        nettoyage(socket_client, fichier)
 
-def reception_data(socket_client, taille_programme):
+def reception_données(socket_client, taille_programme):
     programme = b''
     while len(programme) < taille_programme:
         programme += socket_client.recv(1024)
     return programme
 
-def prepare_nomdufichier(language_code, programme, adresse_client):
+def prepare_fichier(language_code, programme, adresse_client):
     if language_code == "java":
         match = re.search(r'public class (\w+)', programme.decode("utf-8"))
         if not match: raise ValueError("Nom de classe Java introuvable")
@@ -188,10 +196,10 @@ def delegation_programme():
 # GESTION SAUVEGARDE / LANCEMENT PROGRAMME
 # ------------
 
-def sauvegarde_execution(socket_maitre, language_code, nomdufichier, programme):
-    with open(nomdufichier, "wb") as f:
+def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
+    with open(fichier, "wb") as f:
         f.write(programme)
-    stdout, stderr = execution_programme(language_code, nomdufichier, adresse_client=None, programme=programme)
+    stdout, stderr = execution_programme(language_code, fichier, adresse_client=None, programme=programme)
     envoie_sortie(socket_maitre, stdout, stderr)
 
 # ------------
@@ -210,9 +218,9 @@ def envoie_erreur(socket_client, message):
 # FONCTION NETTOYAGE FICHIER TEMPORAIRE
 # ------------
 
-def nettoyage(socket_client, nomdufichier):
+def nettoyage(socket_client, fichier):
     socket_client.close()
-    if nomdufichier and os.path.exists(nomdufichier): os.remove(nomdufichier)
+    if fichier and os.path.exists(fichier): os.remove(fichier)
 
 
 
@@ -221,21 +229,21 @@ def nettoyage(socket_client, nomdufichier):
 # ------------
 
 def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('', PORT_MAITRE))
-    server.listen(5)
+    serveur_maitre = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serveur_maitre.bind(('', PORT_MAITRE))
+    serveur_maitre.listen(5)
     logging.info(f"Serveur maître démarré sur le port {PORT_MAITRE} avec un maximum de {MAX_PROGRAMMES} programmes.")
     client_threads = []
     try:
         while True:
-            socket_client, adresse_client = server.accept()
+            socket_client, adresse_client = serveur_maitre.accept()
             logging.info(f"Connexion acceptée du client {adresse_client}")
             client_thread = threading.Thread(target=gestion_client, args=(socket_client, adresse_client))
             client_thread.start()
             client_threads.append(client_thread)
     except KeyboardInterrupt:
         logging.info("Arrêt du serveur maître. Attente de la fin des connexions clients...")
-        server.close()
+        serveur_maitre.close()
         for thread in client_threads:
             thread.join()
         logging.info("Toutes les connexions clients ont été fermées.")
