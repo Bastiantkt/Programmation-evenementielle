@@ -53,7 +53,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3', fichier],
+                ['python', fichier],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
