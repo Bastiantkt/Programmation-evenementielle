@@ -24,9 +24,9 @@ logging.basicConfig(
 #ARGUMENTS
 # ------------
 
-if len(sys.argv) < 3:
-    print("Utilisation : python3 serveur.py <port_maitre> <ip_autres> <ports_autres> <max_programmes> <max_cpu_usage>")
-    print("Exemple : python3 serveur.py 12345 / 127.0.0.1 / 12346 / 2 / 50")
+if len(sys.argv) < 4:
+    print("Utilisation : python3 serveur.py <port_maitre> <ips_autres> <ports_autres> <max_programmes> <max_cpu_usage>")
+    print("Exemple : python3 serveur.py 12345 127.0.0.1,192.168.1.2 12346,12347;12348,12349 2 50")
     sys.exit(1)
 
 # ------------
@@ -48,16 +48,16 @@ MAX_CPU_USAGE = int(sys.argv[5])
 PORT_MAITRE = int(sys.argv[1])
 
 # ------------
-# ARGUMENTS PORT SERVEUR AUTRES (séparés par des virgules dans les arguments)
-# ------------
-
-PORT_AUTRES = [int(port) for port in sys.argv[3].split(',')]
-
-# ------------
 # ARGUMENTS ADRESSES IP / PORT DES SERVEURS AUTRES
 # ------------
 
-SERVEUR_AUTRES = [(str(sys.argv[2]), port) for port in PORT_AUTRES]  
+ips = sys.argv[2].split(',')
+ports_groupes = sys.argv[3].split(';')
+
+SERVEUR_AUTRES = []
+for ip, ports in zip(ips, ports_groupes):
+    for port in ports.split(','):
+        SERVEUR_AUTRES.append((ip, int(port))) 
 
 # ------------
 # FONCTION DELEGATION AUX AUTRES SERVEURS
@@ -76,7 +76,9 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
                     socket_client.sendall(response)
                 socket_autres.close()
                 return True
-        except: continue
+        except Exception as e:
+            logging.warning(f"Échec de délégation au serveur {ip_serveur_autres}:{port_serveur_autres} - {e}")
+            continue
     return False
 
 # ------------
@@ -92,7 +94,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3', fichier],
+                ['python', fichier],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -234,6 +236,7 @@ def main():
     serveur_maitre.listen(5)
     logging.info(f"Serveur maître démarré sur le port {PORT_MAITRE} avec un maximum de {MAX_PROGRAMMES} programmes.")
     client_threads = []
+
     try:
         while True:
             socket_client, adresse_client = serveur_maitre.accept()
@@ -242,14 +245,12 @@ def main():
             client_thread.start()
             client_threads.append(client_thread)
     except KeyboardInterrupt:
-        logging.info("Arrêt du serveur maître. Attente de la fin des connexions clients...")
-        serveur_maitre.close()
+        logging.info("Arrêt du serveur maître. Fermeture des connexions...")
         for thread in client_threads:
-            thread.join()
-        logging.info("Toutes les connexions clients ont été fermées.")
+            thread.join()  
+        serveur_maitre.close()
     finally:
         logging.info("Serveur maître arrêté.")
-
 
 if __name__ == "__main__":
     main()
