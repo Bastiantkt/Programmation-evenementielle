@@ -3,10 +3,18 @@ import sys
 from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+# ------------
+# -FONCTION CHARGER LE CSS-
+# ------------
+
 def ChargerLeCSS(fichier):
     with open(fichier, 'r') as rd:
         content = rd.read()
     return content
+
+# ------------
+# -FONCTION GUI-
+# ------------
 
 class Interface_Application(QtWidgets.QWidget):
     def __init__(self):
@@ -15,40 +23,39 @@ class Interface_Application(QtWidgets.QWidget):
         self.thread = None 
         self.worker = None 
 
+# ------------
+# -FONCTION INITIALISATION GUI-
+# ------------
+
     def init_ui(self):
         self.setWindowTitle('SAE3.02')
         self.setStyleSheet(ChargerLeCSS('main.css'))
-        self.ip_label = QtWidgets.QLabel('IP du serveur maitre :')
+        self.ip_label = QtWidgets.QLabel('IP du serveur maitre  :')
         self.ip_input = QtWidgets.QLineEdit(self)
-        self.Ombre(self.ip_input)
         self.ip_input.setText('localhost')
-        self.port_label = QtWidgets.QLabel('Port du serveur maitre :')
+        self.port_label = QtWidgets.QLabel('Port du serveur maitre  :')
         self.port_input = QtWidgets.QLineEdit(self)
-        self.Ombre(self.port_input)
         self.port_input.setText('12345')
         self.envoie_button = QtWidgets.QPushButton('Envoyer le programme', self)
         self.envoie_button.clicked.connect(self.Envoie_Programme)
-        self.Ombre(self.envoie_button)
         self.resultat_text = QtWidgets.QTextEdit(self)
         self.resultat_text.setReadOnly(True)
-        self.Ombre(self.resultat_text)
-        grid = QtWidgets.QGridLayout()
-        grid.setSpacing(15)
-        grid.addWidget(self.ip_label, 1, 0)
-        grid.addWidget(self.ip_input, 1, 1)
-        grid.addWidget(self.port_label, 2, 0)
-        grid.addWidget(self.port_input, 2, 1)
-        grid.addWidget(self.envoie_button, 3, 0, 1, 2)
-        grid.addWidget(self.resultat_text, 4, 0, 5, 2)
-        self.setLayout(grid)
+        grille = QtWidgets.QGridLayout()
+        grille.setSpacing(20)
+        grille.addWidget(self.ip_label, 1, 0)
+        grille.addWidget(self.ip_input, 1, 1)
+        grille.addWidget(self.port_label, 2, 0)
+        grille.addWidget(self.port_input, 2, 1)
+        grille.addWidget(self.envoie_button, 3, 0, 3, 2)
+        grille.addWidget(self.resultat_text, 1, 3, 5, 2)
+        self.setLayout(grille)
         self.show()
 
-    def Ombre(self, widget):
-        shadow = QtWidgets.QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(10)
-        shadow.setOffset(3, 3)
-        shadow.setColor(QtGui.QColor(0, 0, 0, 80))
-        widget.setGraphicsEffect(shadow)
+
+
+# ------------
+# -FONCTION ENVOIE PROGRAMME AUX SERVEURS-
+# ------------
 
     def Envoie_Programme(self):
         self.envoie_button.setEnabled(False)
@@ -87,8 +94,16 @@ class Interface_Application(QtWidgets.QWidget):
         self.resultat_text.clear()
         self.resultat_text.append("En attente du résultat...\n")
 
+# ------------
+# -FONCTION MISE A JOUR DU RESULTAT DE LA GUI-
+# ------------
+
     def mettre_a_jour_resultat(self, data):
         self.resultat_text.append(data)
+
+# ------------
+# -FONCTION ARRET DE LA GUI ET RESET-
+# ------------
 
     def arret(self):
         self.envoie_button.setEnabled(True)
@@ -96,6 +111,10 @@ class Interface_Application(QtWidgets.QWidget):
         self.thread.wait()
         self.thread = None
         self.worker = None
+
+# ------------
+# -CLASSE WORKER POUR LA GESTION RÉSEAU-
+# ------------
 
 
 class Worker(QtCore.QObject):
@@ -108,6 +127,11 @@ class Worker(QtCore.QObject):
         self.port_serveur = port_serveur
         self.programme = programme
         self.language_code = language_code
+
+
+# ------------
+# -FONCTION PRINCIPALE DU WORKER-
+# ------------
 
     def run(self):
         try:
@@ -138,6 +162,10 @@ class Worker(QtCore.QObject):
             self.mettre_a_jour_resultat.emit(message_erreur)
 
         self.finished.emit()
+
+# ------------
+# -FONCTION MAIN-
+# ------------
 
 
 def main():
