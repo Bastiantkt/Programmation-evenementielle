@@ -1,6 +1,6 @@
 import socket
 import sys
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 # ------------
@@ -20,6 +20,8 @@ class Interface_Application(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.user_correct = "user"  
+        self.password_correct = "password"  
         self.thread = None 
         self.worker = None 
 
@@ -30,6 +32,13 @@ class Interface_Application(QtWidgets.QWidget):
     def init_ui(self):
         self.setWindowTitle('SAE3.02')
         self.setStyleSheet(ChargerLeCSS('main.css'))
+        self.user_label = QtWidgets.QLabel('Login  :')
+        self.user_input = QtWidgets.QLineEdit(self)
+        self.user_input.textChanged.connect(self.verif_login)  
+        self.password_label = QtWidgets.QLabel('Mot de Passe  :')
+        self.password_input = QtWidgets.QLineEdit(self)
+        self.password_input.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
+        self.password_input.textChanged.connect(self.verif_login)
         self.ip_label = QtWidgets.QLabel('IP du serveur maitre  :')
         self.ip_input = QtWidgets.QLineEdit(self)
         self.ip_input.setText('localhost')
@@ -38,19 +47,35 @@ class Interface_Application(QtWidgets.QWidget):
         self.port_input.setText('12345')
         self.envoie_button = QtWidgets.QPushButton('Envoyer le programme', self)
         self.envoie_button.clicked.connect(self.Envoie_Programme)
+        self.envoie_button.setEnabled(False)
         self.resultat_text = QtWidgets.QTextEdit(self)
         self.resultat_text.setReadOnly(True)
         grille = QtWidgets.QGridLayout()
-        grille.setSpacing(20)
-        grille.addWidget(self.ip_label, 1, 0)
-        grille.addWidget(self.ip_input, 1, 1)
-        grille.addWidget(self.port_label, 2, 0)
-        grille.addWidget(self.port_input, 2, 1)
-        grille.addWidget(self.envoie_button, 3, 0, 3, 2)
+        grille.setSpacing(15)
+        grille.addWidget(self.user_label, 1, 0)
+        grille.addWidget(self.user_input, 1, 1)
+        grille.addWidget(self.password_label, 2, 0)
+        grille.addWidget(self.password_input, 2, 1)
+        grille.addWidget(self.ip_label, 4, 0)
+        grille.addWidget(self.ip_input, 4, 1)
+        grille.addWidget(self.port_label, 5, 0)
+        grille.addWidget(self.port_input, 5, 1)
+        grille.addWidget(self.envoie_button, 6, 3, 1, 2)
         grille.addWidget(self.resultat_text, 1, 3, 5, 2)
         self.setLayout(grille)
         self.show()
 
+
+
+    def verif_login(self):
+
+        user = self.user_input.text()
+        password = self.password_input.text()
+
+        if user == self.user_correct and password == self.password_correct:
+            self.envoie_button.setEnabled(True)  # Activer le bouton si les infos sont correctes
+        else:
+            self.envoie_button.setEnabled(False)  # Désactiver le bouton sinon
 
 
 # ------------
