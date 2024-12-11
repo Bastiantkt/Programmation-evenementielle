@@ -6,6 +6,7 @@ import os
 import logging
 import re
 import psutil
+import time
 
 
 # ------------
@@ -94,7 +95,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python', fichier],
+                ['python3', fichier],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -225,6 +226,17 @@ def nettoyage(socket_client, fichier):
     if fichier and os.path.exists(fichier): os.remove(fichier)
 
 
+# ------------
+# -FONCTION MONITEUR CPU / RAM-
+# ------------
+
+def moniteur():
+        while True:
+            total_cpu = psutil.cpu_percent(interval=1)
+            total_memory = psutil.virtual_memory().used / (1024 ** 2)  
+            logging.info(f"Utilisation CPU : {total_cpu}% | Utilisation RAM : {total_memory:.2f} MB")
+            time.sleep(1)
+
 
 # ------------
 # -MAIN- 
@@ -236,6 +248,8 @@ def main():
     serveur_maitre.listen(5)
     logging.info(f"Serveur maître démarré sur le port {PORT_MAITRE} avec un maximum de {MAX_PROGRAMMES} programmes.")
     client_threads = []
+    thread_moniteur = threading.Thread(target=moniteur, daemon=True)
+    thread_moniteur.start()
 
     try:
         while True:
