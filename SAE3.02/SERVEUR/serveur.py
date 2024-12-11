@@ -230,12 +230,13 @@ def nettoyage(socket_client, fichier):
 # -FONCTION MONITEUR CPU / RAM-
 # ------------
 
-def moniteur():
+def Moniteur_CPU_RAM():
         while True:
-            total_cpu = psutil.cpu_percent(interval=1)
-            total_memory = psutil.virtual_memory().used / (1024 ** 2)  
-            logging.info(f"Utilisation CPU : {total_cpu}% | Utilisation RAM : {total_memory} MB")
-            time.sleep(1)
+            CPU = psutil.cpu_percent(interval=1)
+            RAM = psutil.virtual_memory().used / (1024 ** 2)  
+            PROGRAMMES = threading.active_count() - 1
+            logging.info(f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM} MB | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMMES}")
+            time.sleep(0.5)
 
 
 # ------------
@@ -248,7 +249,7 @@ def main():
     serveur_maitre.listen(5)
     logging.info(f"Serveur maître démarré sur le port {PORT_MAITRE} avec un maximum de {MAX_PROGRAMMES} programmes.")
     client_threads = []
-    thread_moniteur = threading.Thread(target=moniteur, daemon=True)
+    thread_moniteur = threading.Thread(target=Moniteur_CPU_RAM, daemon=True)
     thread_moniteur.start()
 
     try:
@@ -259,7 +260,6 @@ def main():
             client_thread.start()
             client_threads.append(client_thread)
     except KeyboardInterrupt:
-        logging.info("Arrêt du serveur maître. Fermeture des connexions...")
         for thread in client_threads:
             thread.join()  
         serveur_maitre.close()
