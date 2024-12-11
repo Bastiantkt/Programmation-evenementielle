@@ -234,7 +234,7 @@ def moniteur():
         while True:
             total_cpu = psutil.cpu_percent(interval=1)
             total_memory = psutil.virtual_memory().used / (1024 ** 2)  
-            logging.info(f"Utilisation CPU : {total_cpu}% | Utilisation RAM : {total_memory:.2f} MB")
+            logging.info(f"Utilisation CPU : {total_cpu}% | Utilisation RAM : {total_memory} MB")
             time.sleep(1)
 
 
