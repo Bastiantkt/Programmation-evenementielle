@@ -7,6 +7,7 @@ import logging
 import re
 import psutil
 import time
+import platform
 
 
 # ------------
@@ -26,8 +27,8 @@ logging.basicConfig(
 # ------------
 
 if len(sys.argv) < 4:
-    print("Utilisation : python3 serveur.py <port_maitre> <ips_autres> <ports_autres> <max_programmes> <max_cpu_usage>")
-    print("Exemple : python3 serveur.py 12345 127.0.0.1,192.168.1.2 12346,12347;12348,12349 2 50")
+    print("Utilisation : python3 serveur.py <port_maitre> <ips_autres> <ports_autres> <max_programmes> <max_cpu_usage> <max_ram_usage>")
+    print("Exemple : python3 serveur.py 12345 127.0.0.1,192.168.1.2 12346,12347;12348,12349 2 50 80")
     sys.exit(1)
 
 # ------------
@@ -41,6 +42,12 @@ MAX_PROGRAMMES = int(sys.argv[4])
 # ------------
 
 MAX_CPU_USAGE = int(sys.argv[5])
+
+# ------------
+# -ARGUMENTS UTILISATION RAM- 
+# ------------
+
+MAX_RAM_USAGE = int(sys.argv[6])
 
 # ------------
 # -ARGUMENTS PORT SERVEUR MAITRE-
@@ -88,63 +95,58 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
 
 def execution_programme(language_code, fichier, adresse_client, programme=None):
     try:
+        is_windows = platform.system().lower() == "windows"
 
-    # ------------
-    # -PYTHON-
-    # ------------
-
+        # ------------ 
+        # -PYTHON- 
+        # ------------
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3', fichier],
+                ['python', fichier],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
             )
-    # ------------
-    # -JAVA-
-    # ------------
 
+        # ------------ 
+        # -JAVA- 
+        # ------------
         elif language_code == "java":
             classname = os.path.splitext(os.path.basename(fichier))[0]
             subprocess.run(['javac', fichier], check=True)
             resultat_programme = subprocess.run(
-                ['java', classname],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['java', classname],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
-            os.remove(classname + ".class")
+            if not is_windows:
+                os.remove(classname + ".class")
 
-    # ------------
-    # -C-
-    # ------------
-
+        # ------------ 
+        # -C- 
+        # ------------
         elif language_code == "c":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            if is_windows:
+                executable_sortie += ".exe"
             subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                [executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
-            os.remove(executable_sortie)
-    
-    # ------------
-    # -C++-
-    # ------------    
+            if os.path.exists(executable_sortie):
+                os.remove(executable_sortie)
 
-    
+        # ------------ 
+        # -C++- 
+        # ------------
         elif language_code == "cpp":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            if is_windows:
+                executable_sortie += ".exe"
             subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                [executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
-            os.remove(executable_sortie)
+            if os.path.exists(executable_sortie):
+                os.remove(executable_sortie)
         else:
             return "", f"Langage '{language_code}' non supporté."
 
@@ -193,17 +195,20 @@ def prepare_fichier(language_code, programme, adresse_client):
 # ------------
 
 def delegation_programme():
-    return threading.active_count() - 1 < MAX_PROGRAMMES and psutil.cpu_percent(interval=1) < MAX_CPU_USAGE
+    return (threading.active_count() - 1 < MAX_PROGRAMMES and psutil.cpu_percent(interval=1) < MAX_CPU_USAGE and psutil.virtual_memory().percent < MAX_RAM_USAGE)
+
 
 # ------------
 # -GESTION SAUVEGARDE / LANCEMENT PROGRAMME-
 # ------------
 
 def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
+    logging.info(f"Serveur Maitre : Lancement de l'exécution du programme en {language_code}.")
     with open(fichier, "wb") as f:
         f.write(programme)
     stdout, stderr = execution_programme(language_code, fichier, adresse_client=None, programme=programme)
     envoie_sortie(socket_maitre, stdout, stderr)
+
 
 # ------------
 # -FONCTION RENVOIE DU RESULTAT-
@@ -231,12 +236,15 @@ def nettoyage(socket_client, fichier):
 # ------------
 
 def Moniteur_CPU_RAM():
-        while True:
-            CPU = psutil.cpu_percent(interval=1)
-            RAM = psutil.virtual_memory().used / (1024 ** 2)  
-            PROGRAMMES = threading.active_count() - 1
-            logging.info(f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM} MB | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMMES}")
-            time.sleep(0.5)
+    while True:
+        CPU = psutil.cpu_percent(interval=1)
+        RAM = psutil.virtual_memory().percent 
+        RAM_MB = psutil.virtual_memory().used / (1024 ** 2)  
+        PROGRAMMES = threading.active_count() - 1
+        logging.info(
+            f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM_MB:.2f} MB ({RAM}%) / {MAX_RAM_USAGE}% | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMMES}"
+                    )
+        time.sleep(0.5)
 
 
 # ------------
