@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 # ------------
 # -FONCTION CHARGER LE CSS-
 # ------------
+
 def ChargerLeCSS(fichier):
     try:
         with open(fichier, 'r') as rd:
@@ -19,6 +20,7 @@ def ChargerLeCSS(fichier):
 # ------------
 # -FENÊTRE DE CONNEXION-
 # ------------
+
 class LoginWindow(QtWidgets.QWidget):
     login_successful = QtCore.pyqtSignal()
 
@@ -62,6 +64,7 @@ class LoginWindow(QtWidgets.QWidget):
 # ------------
 # -FONCTION GUI-
 # ------------
+
 class Interface_Application(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -74,6 +77,7 @@ class Interface_Application(QtWidgets.QWidget):
 # ------------
 # -FONCTION INITIALISATION GUI-
 # ------------
+
     def init_ui(self):
         self.setWindowTitle('SAE3.02')
         self.setStyleSheet(ChargerLeCSS('main.css'))
@@ -106,6 +110,7 @@ class Interface_Application(QtWidgets.QWidget):
 # ------------
 # -FONCTION ENVOIE PROGRAMME AUX SERVEURS-
 # ------------
+
     def Envoie_Programme(self):
         self.envoie_button.setEnabled(False)
 
@@ -152,12 +157,14 @@ class Interface_Application(QtWidgets.QWidget):
 # ------------
 # -FONCTION MISE A JOUR DU RESULTAT DE LA GUI-
 # ------------
+
     def mettre_a_jour_resultat(self, data):
         self.resultat_text.append(data)
 
 # ------------
 # -FONCTION ARRET DE LA GUI ET RESET-
 # ------------
+
     def arret(self):
         self.envoie_button.setEnabled(True)
         self.thread.quit()
@@ -169,6 +176,7 @@ class Interface_Application(QtWidgets.QWidget):
 # ------------
 # -CLASSE WORKER POUR LA GESTION RÉSEAU-
 # ------------
+
 class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal()
     mettre_a_jour_resultat = QtCore.pyqtSignal(str)
@@ -183,6 +191,7 @@ class Worker(QtCore.QObject):
 # ------------
 # -FONCTION PRINCIPALE DU WORKER-
 # ------------
+
     def run(self):
         try:
             socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -216,6 +225,7 @@ class Worker(QtCore.QObject):
 # ------------
 # -FONCTION MAIN-
 # ------------
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
 
