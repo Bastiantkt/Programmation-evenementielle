@@ -100,17 +100,16 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         # ------------ 
         # -PYTHON- 
         # ------------
+
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python', fichier],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['python', fichier],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
 
         # ------------ 
         # -JAVA- 
         # ------------
+
         elif language_code == "java":
             classname = os.path.splitext(os.path.basename(fichier))[0]
             subprocess.run(['javac', fichier], check=True)
@@ -123,6 +122,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         # ------------ 
         # -C- 
         # ------------
+
         elif language_code == "c":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
             if is_windows:
@@ -137,6 +137,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         # ------------ 
         # -C++- 
         # ------------
+
         elif language_code == "cpp":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
             if is_windows:
@@ -241,9 +242,7 @@ def Moniteur_CPU_RAM():
         RAM = psutil.virtual_memory().percent 
         RAM_MB = psutil.virtual_memory().used / (1024 ** 2)  
         PROGRAMMES = threading.active_count() - 1
-        logging.info(
-            f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM_MB:.2f} MB ({RAM}%) / {MAX_RAM_USAGE}% | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMMES}"
-                    )
+        logging.info(f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM_MB:.2f} MB ({RAM}%) / {MAX_RAM_USAGE}% | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMMES}")
         time.sleep(0.5)
 
 
