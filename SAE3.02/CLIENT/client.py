@@ -4,6 +4,11 @@ import os
 from PyQt6 import QtWidgets, QtCore
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
+# ------------
+# -VARIABLE CLE SECRETE-
+# ------------
+
+SECRET_KEY = "cle_secrete_IUT_COLMAR"
 
 # ------------
 # -FONCTION CHARGER LE CSS-
@@ -197,7 +202,7 @@ class Worker(QtCore.QObject):
             socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             socket_client.connect((self.ip_serveur, self.port_serveur))
 
-            header = f"{self.language_code}:{len(self.programme)}".encode()
+            header = f"{SECRET_KEY}:{self.language_code}:{len(self.programme)}".encode()
             socket_client.sendall(header)
             ack = socket_client.recv(1024).decode()
             if ack != "HEADER_RECUE":
