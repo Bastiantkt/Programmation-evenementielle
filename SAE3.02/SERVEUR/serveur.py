@@ -56,6 +56,12 @@ MAX_RAM_USAGE = int(sys.argv[6])
 PORT_MAITRE = int(sys.argv[1])
 
 # ------------
+# -VARIABLE CLE SECRETE-
+# ------------
+
+SECRET_KEY = "cle_secrete_IUT_COLMAR"
+
+# ------------
 # -ARGUMENTS ADRESSES IP / PORT DES SERVEURS AUTRES-
 # ------------
 
@@ -162,21 +168,22 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 # -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
 # ------------
 
-def gestion_client(socket_client, adresse_client):
+def gestion_client(socket_client,adresse_client):
     try:
-        header_data = socket_client.recv(1024).decode()
-        if not header_data: raise ValueError("Aucune donnée reçue")
-        language_code, taille_programme = header_data.split(':')
-        taille_programme = int(taille_programme)
+        header_data=socket_client.recv(1024).decode()
+        if not header_data:raise ValueError("Aucune donnée reçue")
+        secret_key,language_code,taille_programme=header_data.split(':')
+        taille_programme=int(taille_programme)
+        if secret_key!=SECRET_KEY:raise ValueError("Clé secrète invalide !")
         socket_client.sendall("HEADER_RECUE".encode())
-        programme = reception_données(socket_client, taille_programme)
-        fichier = prepare_fichier(language_code, programme, adresse_client)
-        if not delegation_programme() and delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme): return
-        sauvegarde_execution(socket_client, language_code, fichier, programme)
+        programme=reception_données(socket_client,taille_programme)
+        fichier=prepare_fichier(language_code,programme,adresse_client)
+        if not delegation_programme() and delegation_serveurs_autres(socket_client,adresse_client,language_code,taille_programme,programme):return
+        sauvegarde_execution(socket_client,language_code,fichier,programme)
     except Exception as e:
-        envoie_erreur(socket_client, f"Erreur : {e}")
+        envoie_erreur(socket_client,f"Erreur : {e}")
     finally:
-        nettoyage(socket_client, fichier)
+        nettoyage(socket_client,fichier)
 
 def reception_données(socket_client, taille_programme):
     programme = b''
