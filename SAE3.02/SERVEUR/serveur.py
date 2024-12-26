@@ -90,73 +90,101 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
     return False
 
 # ------------
-# -FONCTION COMPILATION / EXECUTION PROGRAMME-
+# FONCTION COMPILATION / EXECUTION PROGRAMME
 # ------------
 
-def execution_programme(language_code, fichier, adresse_client, programme=None):
+def execution_programme(language_code, nomdufichier, adresse_client, programme=None):
+    stdout, stderr = "", ""
+
+    # ------------
+    # PYTHON
+    # ------------
+
+    if language_code == "py":
+        execution = subprocess.Popen(['python3', nomdufichier], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        stdout, stderr = execution.communicate()
+
+    # ------------
+    # JAVA
+    # ------------
+
+    elif language_code == "java":
+        if not programme: return "Programme Manquant"
+        compilation = subprocess.Popen(['javac', nomdufichier], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        compile_stdout, compile_stderr = compilation.communicate()
+        stderr += compile_stderr
+        if not compile_stderr:
+            classname = os.path.splitext(os.path.basename(nomdufichier))[0]
+            execution = subprocess.Popen(['java', classname], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, exec_stderr = execution.communicate()
+            stderr += exec_stderr
+            os.remove(classname + ".class")
+
+    # ------------
+    # C
+    # ------------
+
+    elif language_code == "c":
+        executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+        compilation = subprocess.Popen(['gcc', nomdufichier, '-o', executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        compile_stdout, compile_stderr = compilation.communicate()
+        stderr += compile_stderr
+        if not compile_stderr:
+            execution = subprocess.Popen(['./' + executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, exec_stderr = execution.communicate()
+            stderr += exec_stderr
+            os.remove(executable_sortie)
+    
+    # ------------
+    # C++
+    # ------------    
+
+    
+    elif language_code == "cpp":
+        executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+        compilation = subprocess.Popen(['g++', nomdufichier, '-o', executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        compile_stdout, compile_stderr = compilation.communicate()
+        stderr += compile_stderr
+        if not compile_stderr:
+            execution = subprocess.Popen(['./' + executable_sortie], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, exec_stderr = execution.communicate()
+            stderr += exec_stderr
+            os.remove(executable_sortie)
+    else:
+        stderr = f"Langage '{language_code}' non supporté."
+    return stdout, stderr
+
+    # ------------
+    # GESTION ENVOIE / RECEPTION : FICHIER SERVEUR MAITRE
+    # ------------  
+
+def gestion_maitre(socket_maitre, adresse_maitre):
     try:
-        is_windows = platform.system().lower() == "windows"
-
-        # ------------ 
-        # -PYTHON- 
-        # ------------
-
-        if language_code == "py":
-            resultat_programme = subprocess.run(
-                ['python', fichier],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
-            )
-
-        # ------------ 
-        # -JAVA- 
-        # ------------
-
-        elif language_code == "java":
-            classname = os.path.splitext(os.path.basename(fichier))[0]
-            subprocess.run(['javac', fichier], check=True)
-            resultat_programme = subprocess.run(
-                ['java', classname],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
-            )
-            if not is_windows:
-                os.remove(classname + ".class")
-
-        # ------------ 
-        # -C- 
-        # ------------
-
-        elif language_code == "c":
-            executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
-            if is_windows:
-                executable_sortie += ".exe"
-            subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
-            resultat_programme = subprocess.run(
-                [executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
-            )
-            if os.path.exists(executable_sortie):
-                os.remove(executable_sortie)
-
-        # ------------ 
-        # -C++- 
-        # ------------
-
-        elif language_code == "cpp":
-            executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
-            if is_windows:
-                executable_sortie += ".exe"
-            subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
-            resultat_programme = subprocess.run(
-                [executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
-            )
-            if os.path.exists(executable_sortie):
-                os.remove(executable_sortie)
-        else:
-            return "", f"Langage '{language_code}' non supporté."
-
-        return resultat_programme.stdout, resultat_programme.stderr
-
-    except subprocess.CalledProcessError as e:
-        return "", f"Erreur d'exécution : {str(e)}"
+        header_data = socket_maitre.recv(1024).decode()
+        if not header_data: raise ValueError("Aucune donnée reçue")
+        language_code, program_size = header_data.split(':')
+        program_size = int(program_size)
+        socket_maitre.sendall("HEADER_RECUE".encode())
+        programme = reception_data(socket_maitre, program_size)
+        nomdufichier = prepare_nomdufichier(language_code, programme, adresse_maitre)
+        sauvegarde_execution(socket_maitre, language_code, nomdufichier, programme)
     except Exception as e:
-        return "", f"Erreur : {str(e)}"
+        envoie_erreur(socket_maitre, f"Erreur : {e}")
+    finally:
+        nettoyage(socket_maitre, nomdufichier)
+
+def reception_data(socket_maitre, program_size):
+    programme = b''
+    while len(programme) < program_size:
+        programme += socket_maitre.recv(1024)
+    return programme
+
+def prepare_nomdufichier(language_code, programme, adresse_maitre):
+    if language_code == "java":
+        match = re.search(r'public class (\w+)', programme.decode("utf-8"))
+        if not match: raise ValueError("Nom de classe Java introuvable")
+        return f"{match.group(1)}.java"
+    return f"programme_client_{adresse_maitre[1]}_{threading.get_ident()}.{language_code}"
 
 # ------------
 # -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
