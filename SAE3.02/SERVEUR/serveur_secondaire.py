@@ -56,6 +56,12 @@ MAX_CPU_USAGE = int(sys.argv[3])
 MAX_RAM_USAGE = int(sys.argv[4])
 
 # ------------
+# -VARIABLE CLE SECRETE-
+# ------------
+
+SECRET_KEY = "cle_secrete_IUT_COLMAR"
+
+# ------------
 # -FONCTION COMPILATION / EXECUTION PROGRAMME-
 # ------------
 
@@ -128,20 +134,21 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
     # -GESTION ENVOIE / RECEPTION : FICHIER SERVEUR MAITRE-
     # ------------  
 
-def gestion_maitre(socket_maitre, adresse_maitre):
+def gestion_maitre(socket_maitre,adresse_maitre):
     try:
-        header_data = socket_maitre.recv(1024).decode()
-        if not header_data: raise ValueError("Aucune donnée reçue")
-        language_code, program_size = header_data.split(':')
-        program_size = int(program_size)
+        header_data=socket_maitre.recv(1024).decode()
+        if not header_data:raise ValueError("Aucune donnée reçue")
+        secret_key,language_code,program_size=header_data.split(':')
+        program_size=int(program_size)
+        if secret_key!=SECRET_KEY:raise ValueError("Clé secrète invalide !")
         socket_maitre.sendall("HEADER_RECUE".encode())
-        programme = reception_données(socket_maitre, program_size)
-        fichier = prepare_fichier(language_code, programme, adresse_maitre)
-        sauvegarde_execution(socket_maitre, language_code, fichier, programme)
+        programme=reception_données(socket_maitre,program_size)
+        fichier=prepare_fichier(language_code,programme,adresse_maitre)
+        sauvegarde_execution(socket_maitre,language_code,fichier,programme)
     except Exception as e:
-        envoie_erreur(socket_maitre, f"Erreur : {e}")
+        envoie_erreur(socket_maitre,f"Erreur : {e}")
     finally:
-        nettoyage(socket_maitre, fichier)
+        nettoyage(socket_maitre,fichier)
 
 def reception_données(socket_maitre, program_size):
     programme = b''
