@@ -101,21 +101,23 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
 
 def execution_programme(language_code, fichier, adresse_client, programme=None):
     try:
+        systeme = platform.system()
 
-    # ------------
-    # -PYTHON-
-    # ------------
+        # ------------
+        # -PYTHON-
+        # ------------
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3', fichier],
+                ['python3' if systeme != 'Windows' else 'python', fichier],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
             )
-    # ------------
-    # -JAVA-
-    # ------------
+
+        # ------------
+        # -JAVA-
+        # ------------
 
         elif language_code == "java":
             classname = os.path.splitext(os.path.basename(fichier))[0]
@@ -128,31 +130,32 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             )
             os.remove(classname + ".class")
 
-    # ------------
-    # -C-
-    # ------------
+        # ------------
+        # -C-
+        # ------------
 
         elif language_code == "c":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
             )
             os.remove(executable_sortie)
 
-    # ------------
-    # -C++-
-    # ------------    
-
+        # ------------
+        # -C++-
+        # ------------    
 
         elif language_code == "cpp":
             executable_sortie = f"prog_{adresse_client[1] if adresse_client else 'default'}_{threading.get_ident()}"
+            executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -167,6 +170,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         return "", f"Erreur d'exécution : {str(e)}"
     except Exception as e:
         return "", f"Erreur : {str(e)}"
+
 
 # ------------
 # -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
