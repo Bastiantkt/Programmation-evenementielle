@@ -67,62 +67,52 @@ SECRET_KEY = "cle_secrete_IUT_COLMAR"
 
 def execution_programme(language_code, fichier, adresse_maitre, programme=None):
     try:
+        systeme = platform.system()
 
-    # ------------
-    # -PYTHON-
-    # ------------
+        # ------------
+        # -PYTHON-
+        # ------------
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3', fichier],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['python3' if systeme != 'Windows' else 'python', fichier],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
-    # ------------
-    # -JAVA-
-    # ------------
+
+        # ------------
+        # -JAVA-
+        # ------------
 
         elif language_code == "java":
             classname = os.path.splitext(os.path.basename(fichier))[0]
             subprocess.run(['javac', fichier], check=True)
             resultat_programme = subprocess.run(
-                ['java', classname],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['java', classname],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
             os.remove(classname + ".class")
 
-    # ------------
-    # -C-
-    # ------------
+        # ------------
+        # -C-
+        # ------------
 
         elif language_code == "c":
             executable_sortie = f"prog_{adresse_maitre[1] if adresse_maitre else 'default'}_{threading.get_ident()}"
+            executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
             os.remove(executable_sortie)
 
-    # ------------
-    # -C++-
-    # ------------    
-
+        # ------------
+        # -C++-
+        # ------------    
 
         elif language_code == "cpp":
             executable_sortie = f"prog_{adresse_maitre[1] if adresse_maitre else 'default'}_{threading.get_ident()}"
+            executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                ['./' + executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
             os.remove(executable_sortie)
         else:
             return "", f"Langage '{language_code}' non supporté."

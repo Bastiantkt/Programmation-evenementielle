@@ -109,10 +109,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 
         if language_code == "py":
             resultat_programme = subprocess.run(
-                ['python3' if systeme != 'Windows' else 'python', fichier],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['python3' if systeme != 'Windows' else 'python', fichier],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
 
         # ------------
@@ -123,10 +120,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             classname = os.path.splitext(os.path.basename(fichier))[0]
             subprocess.run(['javac', fichier], check=True)
             resultat_programme = subprocess.run(
-                ['java', classname],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                ['java', classname],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
             os.remove(classname + ".class")
 
@@ -139,10 +133,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['gcc', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True
             )
             os.remove(executable_sortie)
 
@@ -155,11 +146,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
             executable_sortie += ".exe" if systeme == 'Windows' else ""
             subprocess.run(['g++', fichier, '-o', executable_sortie], check=True)
             resultat_programme = subprocess.run(
-                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
+                [f'./{executable_sortie}' if systeme != 'Windows' else executable_sortie],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
             os.remove(executable_sortie)
         else:
             return "", f"Langage '{language_code}' non supporté."
@@ -170,7 +157,6 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
         return "", f"Erreur d'exécution : {str(e)}"
     except Exception as e:
         return "", f"Erreur : {str(e)}"
-
 
 # ------------
 # -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
