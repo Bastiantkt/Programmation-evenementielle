@@ -139,6 +139,7 @@ def execution_programme(language_code, fichier, adresse_maitre, programme=None):
     # ------------  
 
 def gestion_maitre(socket_maitre,adresse_maitre):
+    fichier = None
     try:
         header_data=socket_maitre.recv(1024).decode()
         if not header_data:raise ValueError("Aucune donnée reçue")
