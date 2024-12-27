@@ -177,6 +177,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 # ------------
 
 def gestion_client(socket_client,adresse_client):
+    fichier = None
     try:
         header_data=socket_client.recv(1024).decode()
         if not header_data:raise ValueError("Aucune donnée reçue")
