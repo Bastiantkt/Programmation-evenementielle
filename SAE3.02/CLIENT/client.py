@@ -193,14 +193,11 @@ class Worker(QtCore.QObject):
         self.programme = programme
         self.language_code = language_code
 
-# ------------
-# -FONCTION PRINCIPALE DU WORKER-
-# ------------
-
     def run(self):
         try:
             socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             socket_client.connect((self.ip_serveur, self.port_serveur))
+            socket_client.settimeout(300)  
 
             header = f"{SECRET_KEY}:{self.language_code}:{len(self.programme)}".encode()
             socket_client.sendall(header)
@@ -213,18 +210,23 @@ class Worker(QtCore.QObject):
             result = b''
             while True:
                 data = socket_client.recv(1024)
-                if not data:
+                if data == b'ATTENTE':
+                    self.mettre_a_jour_resultat.emit("En attente d'exécution sur le serveur.")
+                    continue
+                elif not data:
                     break
                 result += data
 
             self.mettre_a_jour_resultat.emit(result.decode())
-            socket_client.close()
-
+        except socket.timeout:
+            self.mettre_a_jour_resultat.emit("Le serveur ne répond pas. Timeout expiré.")
         except Exception as e:
-            message_erreur = f"Une erreur est survenue : {str(e)}"
-            self.mettre_a_jour_resultat.emit(message_erreur)
+            self.mettre_a_jour_resultat.emit(f"Une erreur est survenue : {str(e)}")
+        finally:
+            socket_client.close()
+            self.finished.emit()
 
-        self.finished.emit()
+
 
 
 # ------------
