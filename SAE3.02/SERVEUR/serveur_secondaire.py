@@ -186,7 +186,7 @@ def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
     except Exception as e:
         socket_maitre.sendall(f"Erreur d'exécution : {str(e)}".encode())
     finally:
-        socket_maitre.sendall(b"FIN_DONNEES") 
+        socket_maitre.sendall(b"") 
 
 
 
