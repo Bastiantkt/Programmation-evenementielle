@@ -58,7 +58,7 @@ class LoginWindow(QtWidgets.QWidget):
     def verifier_login(self):
         user = self.user_input.text()
         password = self.password_input.text()
-        if user == "user" and password == "password":
+        if user == "" and password == "":
             self.login_successful.emit()
             self.close()
         else:
@@ -72,8 +72,8 @@ class Interface_Application(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.user_correct = "user"
-        self.password_correct = "password"
+        self.user_correct = ""
+        self.password_correct = ""
         self.thread = None
         self.worker = None
 
@@ -152,8 +152,10 @@ class Interface_Application(QtWidgets.QWidget):
         self.thread.start()
 
     def mettre_a_jour_resultat(self, data):
-        self.resultat_text.append(data)
-        self.resultat_text.ensureCursorVisible()
+        existing_text = "\n".join(line.strip() for line in self.resultat_text.toPlainText().splitlines())
+        if data.strip() not in existing_text:
+            self.resultat_text.append(data.strip())
+            self.resultat_text.ensureCursorVisible()
 
     def arret(self):
         self.envoie_button.setEnabled(True)
@@ -205,10 +207,8 @@ class Worker(QtCore.QObject):
                 decoded_data = data.decode()
                 if decoded_data == "ATTENTE":
                     if decoded_data not in self.messages_affiches:  
-                        self.mettre_a_jour_resultat.emit("En attente d'exécution sur le serveur...")
                         self.messages_affiches.add(decoded_data)
-                elif decoded_data == "FIN_DONNEES":
-                    self.mettre_a_jour_resultat.emit("Transmission terminée.")
+                elif decoded_data == "":
                     break
                 else:
                     result += data
