@@ -214,15 +214,22 @@ def gestion_client(socket_client, adresse_client):
 
         if delegation_programme():
             sauvegarde_execution(socket_client, language_code, fichier, programme)
-        elif not delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme):
-            request_queue.put((socket_client, adresse_client, programme, header_data))
+        elif delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme):
+            logging.info(f"Client {adresse_client} délégué à un serveur secondaire.")
+        else:
+            try:
+                socket_client.sendall(b"ATTENTE")
+                logging.info(f"Client {adresse_client} mis en attente faute de ressources.")
+                request_queue.put((socket_client, adresse_client, programme, header_data))
+            except (socket.error, BrokenPipeError) as e:
+                logging.warning(f"Erreur lors de l'envoi de l'attente au client {adresse_client} : {e}")
+                raise
     except Exception as e:
         envoie_erreur(socket_client, f"Erreur : {e}")
     finally:
-        if socket_client.fileno() != -1:
-            socket_client.close()
         if fichier:
             nettoyage(None, fichier)
+
 
 request_queue = Queue()
 
@@ -230,7 +237,7 @@ def gestion_file_attente():
     while True:
         socket_client, adresse_client, programme, header_data = request_queue.get()
         try:
-            if socket_client.fileno() == -1: 
+            if socket_client.fileno() == -1:
                 logging.warning(f"Socket du client {adresse_client} fermé. Retiré de la file.")
                 continue
 
@@ -240,24 +247,25 @@ def gestion_file_attente():
             if delegation_programme():
                 fichier = prepare_fichier(language_code, programme, adresse_client)
                 sauvegarde_execution(socket_client, language_code, fichier, programme)
-                logging.info(f"Client {adresse_client} exécuté localement.")
+                logging.info(f"Client {adresse_client} exécuté localement depuis la file d'attente.")
             elif delegation_serveurs_autres(socket_client, adresse_client, language_code, taille_programme, programme):
-                logging.info(f"Client {adresse_client} délégué à un serveur secondaire.")
+                logging.info(f"Client {adresse_client} délégué depuis la file d'attente à un serveur secondaire.")
             else:
-                try:
-                    socket_client.sendall(b"ATTENTE") 
-                    logging.info(f"Client {adresse_client} mis en attente faute de ressources.")
-                except (socket.error, BrokenPipeError) as e:
-                    logging.warning(f"Erreur lors de l'envoi de l'attente au client {adresse_client} : {e}")
-                    continue
-
-                time.sleep(1) 
-                request_queue.put((socket_client, adresse_client, programme, header_data))  
+                if not socket_client._closed: 
+                    try:
+                        socket_client.sendall(b"ATTENTE")
+                        logging.info(f"Client {adresse_client} mis en attente faute de ressources.")
+                    except (socket.error, BrokenPipeError) as e:
+                        logging.warning(f"Erreur lors de la tentative de mise en attente pour {adresse_client} : {e}")
+                        continue
+                time.sleep(1)  # Répéter après un délai
+                request_queue.put((socket_client, adresse_client, programme, header_data))
         except Exception as e:
             logging.error(f"Erreur dans la gestion de la file d'attente pour {adresse_client} : {e}")
             envoie_erreur(socket_client, f"Erreur : {e}")
         finally:
             request_queue.task_done()
+
 
 
 def reception_données(socket_client, taille_programme):
@@ -289,6 +297,7 @@ def delegation_programme():
 # ------------
 
 def sauvegarde_execution(socket_client, language_code, fichier, programme):
+    logging.info(f"Serveur secondaire : Lancement de l'exécution du programme en {language_code}.")
     global active_programs
     active_programs += 1  
     try:
