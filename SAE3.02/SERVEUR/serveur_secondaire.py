@@ -175,16 +175,37 @@ def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
     with open(fichier, "wb") as f:
         f.write(programme)
     stdout, stderr = execution_programme(language_code, fichier, adresse_maitre=None, programme=programme)
-    envoie_sortie(socket_maitre, stdout, stderr)
+
+    try:
+        if stdout:
+            socket_maitre.sendall(f"SORTIE:\n{stdout}".encode())
+        if stderr:
+            socket_maitre.sendall(f"ERREURS:\n{stderr}".encode())
+        if not stdout and not stderr:
+            socket_maitre.sendall("Aucune sortie.".encode())
+    except Exception as e:
+        socket_maitre.sendall(f"Erreur d'exécution : {str(e)}".encode())
+    finally:
+        socket_maitre.sendall(b"FIN_DONNEES") 
+
+
 
 # ------------
 # -FONCTION RENVOIE DU RESULTAT-
 # ------------
 
 def envoie_sortie(socket_maitre, stdout, stderr):
-    if stdout: socket_maitre.sendall(f"SORTIE:\n{stdout}".encode())
-    if stderr: socket_maitre.sendall(f"ERREURS:\n{stderr}".encode())
-    if not stdout and not stderr: socket_maitre.sendall("Aucune sortie.".encode())
+    try:
+        if stdout:
+            socket_maitre.sendall(f"SORTIE:\n{stdout}".encode())
+        if stderr:
+            socket_maitre.sendall(f"ERREURS:\n{stderr}".encode())
+        if not stdout and not stderr:
+            socket_maitre.sendall("Aucune sortie.".encode())
+    finally:
+        socket_maitre.shutdown(socket.SHUT_WR)  
+        socket_maitre.close()
+
 
 def envoie_erreur(socket_maitre, message):
     socket_maitre.sendall(message.encode())
@@ -248,3 +269,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
