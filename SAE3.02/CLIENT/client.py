@@ -21,7 +21,6 @@ def ChargerLeCSS(fichier):
     except FileNotFoundError:
         return ""
 
-
 # ------------
 # -FENÊTRE DE CONNEXION-
 # ------------
@@ -65,7 +64,6 @@ class LoginWindow(QtWidgets.QWidget):
         else:
             QMessageBox.critical(self, "Erreur", "Login ou mot de passe incorrect")
 
-
 # ------------
 # -FONCTION GUI-
 # ------------
@@ -78,10 +76,6 @@ class Interface_Application(QtWidgets.QWidget):
         self.password_correct = "password"
         self.thread = None
         self.worker = None
-
-# ------------
-# -FONCTION INITIALISATION GUI-
-# ------------
 
     def init_ui(self):
         self.setWindowTitle('SAE3.02')
@@ -111,10 +105,6 @@ class Interface_Application(QtWidgets.QWidget):
         grille.addWidget(self.resultat_text, 1, 3, 5, 2)
 
         self.setLayout(grille)
-
-# ------------
-# -FONCTION ENVOIE PROGRAMME AUX SERVEURS-
-# ------------
 
     def Envoie_Programme(self):
         self.envoie_button.setEnabled(False)
@@ -146,29 +136,24 @@ class Interface_Application(QtWidgets.QWidget):
         _, extension_fichier = os.path.splitext(chemin_fichier)
         language_code = extension_fichier.lower().strip('.')
 
-        self.thread = QtCore.QThread()
-        self.worker = Worker(ip_serveur, port_serveur, programme, language_code)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.arret)
-        self.worker.mettre_a_jour_resultat.connect(self.mettre_a_jour_resultat)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.start()
-
         self.resultat_text.clear()
         self.resultat_text.append("En attente du résultat...\n")
 
-# ------------
-# -FONCTION MISE A JOUR DU RESULTAT DE LA GUI-
-# ------------
+        self.thread = QtCore.QThread()
+        self.worker = Worker(ip_serveur, port_serveur, programme, language_code)
+        self.worker.moveToThread(self.thread)
+
+        self.thread.started.connect(self.worker.run)
+        self.worker.mettre_a_jour_resultat.connect(self.mettre_a_jour_resultat)
+        self.worker.finished.connect(self.arret)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+        self.thread.start()
 
     def mettre_a_jour_resultat(self, data):
         self.resultat_text.append(data)
-
-# ------------
-# -FONCTION ARRET DE LA GUI ET RESET-
-# ------------
+        self.resultat_text.ensureCursorVisible()
 
     def arret(self):
         self.envoie_button.setEnabled(True)
@@ -176,7 +161,6 @@ class Interface_Application(QtWidgets.QWidget):
         self.thread.wait()
         self.thread = None
         self.worker = None
-
 
 # ------------
 # -CLASSE WORKER POUR LA GESTION RÉSEAU-
@@ -192,40 +176,58 @@ class Worker(QtCore.QObject):
         self.port_serveur = port_serveur
         self.programme = programme
         self.language_code = language_code
+        self.messages_affiches = set()  
 
     def run(self):
         try:
             socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.mettre_a_jour_resultat.emit("Connexion au serveur...")
             socket_client.connect((self.ip_serveur, self.port_serveur))
             socket_client.settimeout(300)  
 
+            self.mettre_a_jour_resultat.emit("Envoi de l'en-tête...")
             header = f"{SECRET_KEY}:{self.language_code}:{len(self.programme)}".encode()
             socket_client.sendall(header)
+
             ack = socket_client.recv(1024).decode()
             if ack != "HEADER_RECUE":
                 raise Exception("Problème lors de l'envoi de l'en-tête.")
 
+            self.mettre_a_jour_resultat.emit("Programme envoyé. En attente de réponse...")
             socket_client.sendall(self.programme)
 
             result = b''
             while True:
-                data = socket_client.recv(1024)
-                if data == b'ATTENTE':
-                    self.mettre_a_jour_resultat.emit("En attente d'exécution sur le serveur.")
-                    continue
-                elif not data:
+                data = socket_client.recv(4096)
+                if not data:  
                     break
-                result += data
 
-            self.mettre_a_jour_resultat.emit(result.decode())
+                decoded_data = data.decode()
+                if decoded_data == "ATTENTE":
+                    if decoded_data not in self.messages_affiches:  
+                        self.mettre_a_jour_resultat.emit("En attente d'exécution sur le serveur...")
+                        self.messages_affiches.add(decoded_data)
+                elif decoded_data == "FIN_DONNEES":
+                    self.mettre_a_jour_resultat.emit("Transmission terminée.")
+                    break
+                else:
+                    result += data
+                    self.mettre_a_jour_resultat.emit(decoded_data)  
+
+            if result:
+                self.mettre_a_jour_resultat.emit(result.decode())
+            else:
+                self.mettre_a_jour_resultat.emit("Aucun résultat reçu du serveur.")
         except socket.timeout:
             self.mettre_a_jour_resultat.emit("Le serveur ne répond pas. Timeout expiré.")
         except Exception as e:
             self.mettre_a_jour_resultat.emit(f"Une erreur est survenue : {str(e)}")
         finally:
-            socket_client.close()
+            try:
+                socket_client.close()
+            except Exception:
+                pass
             self.finished.emit()
-
 
 
 
