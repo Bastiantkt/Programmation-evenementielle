@@ -177,7 +177,7 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 # ------------
 
 
-def get_server_status(ip, port):
+def stauts_serveurs(ip, port):
     try:
         with socket.create_connection((ip, port), timeout=2) as s:
             s.sendall("STATUS".encode())
@@ -194,13 +194,10 @@ def get_server_status(ip, port):
 def choisir_meilleur_serveur():
     charges = {}
     for ip, port in SERVEUR_AUTRES:
-        charge, max_programmes = get_server_status(ip, port)
+        charge, max_programmes = stauts_serveurs(ip, port)
         if max_programmes and charge < max_programmes:
             charges[(ip, port)] = charge
     return min(charges, key=charges.get) if charges else None
-
-
-request_queue = Queue()
 
 def gestion_client(socket_client, adresse_client):
     fichier = None
@@ -227,6 +224,7 @@ def gestion_client(socket_client, adresse_client):
         if fichier:
             nettoyage(None, fichier)
 
+request_queue = Queue()
 
 def gestion_file_attente():
     while True:
@@ -253,7 +251,7 @@ def gestion_file_attente():
                     logging.warning(f"Erreur lors de l'envoi de l'attente au client {adresse_client} : {e}")
                     continue
 
-                time.sleep(1)  # Pause pour limiter la charge CPU
+                time.sleep(1) 
                 request_queue.put((socket_client, adresse_client, programme, header_data))  
         except Exception as e:
             logging.error(f"Erreur dans la gestion de la file d'attente pour {adresse_client} : {e}")
