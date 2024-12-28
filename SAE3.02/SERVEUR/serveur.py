@@ -297,7 +297,7 @@ def delegation_programme():
 # ------------
 
 def sauvegarde_execution(socket_client, language_code, fichier, programme):
-    logging.info(f"Serveur secondaire : Lancement de l'exécution du programme en {language_code}.")
+    logging.info(f"Serveur Maitre : Lancement de l'exécution du programme en {language_code}.")
     global active_programs
     active_programs += 1  
     try:
