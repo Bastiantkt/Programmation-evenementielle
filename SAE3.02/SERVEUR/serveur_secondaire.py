@@ -133,7 +133,7 @@ def gestion_maitre(socket_maitre, adresse_maitre):
     try:
         header_data = socket_maitre.recv(1024).decode()
         if header_data == "STATUS":
-            charge = threading.active_count() - 1
+            charge = threading.active_count() - 2
             status_message = f"CHARGE:{charge}/MAX_PROGRAMMES:{MAX_PROGRAMS}/MAX_CPU:{MAX_CPU_USAGE}/MAX_RAM:{MAX_RAM_USAGE}"
             socket_maitre.sendall(status_message.encode())
             socket_maitre.close()
@@ -206,7 +206,7 @@ def Moniteur_CPU_RAM():
         CPU = psutil.cpu_percent(interval=1)
         RAM = psutil.virtual_memory().percent 
         RAM_MB = psutil.virtual_memory().used / (1024 ** 2)  
-        PROGRAMMES = threading.active_count() - 1
+        PROGRAMMES = threading.active_count() - 2
         logging.info(f"Utilisation CPU : {CPU}% / {MAX_CPU_USAGE}% | Utilisation RAM : {RAM_MB:.2f} MB ({RAM}%) / {MAX_RAM_USAGE}% | Programmes en cours : {PROGRAMMES}/{MAX_PROGRAMS}")
         time.sleep(0.5)
 
@@ -228,9 +228,9 @@ def main():
             logging.info(f"Connexion acceptée du serveur maître {adresse_maitre}")
 
             if (
-                threading.active_count() - 1 >= MAX_PROGRAMS or psutil.cpu_percent(interval=1) >= MAX_CPU_USAGE or psutil.virtual_memory().percent >= MAX_RAM_USAGE
+                threading.active_count() - 2 >= MAX_PROGRAMS or psutil.cpu_percent(interval=1) >= MAX_CPU_USAGE or psutil.virtual_memory().percent >= MAX_RAM_USAGE
             ):
-                warning_msg = (f"Limite atteinte : " f"{'programmes' if threading.active_count() - 1 >= MAX_PROGRAMS else 'CPU' if psutil.cpu_percent(interval=1) >= MAX_CPU_USAGE else 'RAM'}." f" Refus de la connexion."
+                warning_msg = (f"Limite atteinte : " f"{'programmes' if threading.active_count() - 2 >= MAX_PROGRAMS else 'CPU' if psutil.cpu_percent(interval=1) >= MAX_CPU_USAGE else 'RAM'}." f" Refus de la connexion."
                 )
                 logging.warning(warning_msg)
                 socket_maitre.sendall(warning_msg.encode())
