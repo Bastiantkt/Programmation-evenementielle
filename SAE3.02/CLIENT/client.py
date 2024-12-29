@@ -58,7 +58,7 @@ class LoginWindow(QtWidgets.QWidget):
     def verifier_login(self):
         user = self.user_input.text()
         password = self.password_input.text()
-        if user == "" and password == "":
+        if user == "user" and password == "password":
             self.login_successful.emit()
             self.close()
         else:
@@ -72,8 +72,8 @@ class Interface_Application(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.user_correct = ""
-        self.password_correct = ""
+        self.user_correct = "user"
+        self.password_correct = "password"
         self.thread = None
         self.worker = None
 
