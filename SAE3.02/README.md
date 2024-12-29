@@ -26,6 +26,8 @@
 	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (javac) inclus dans le $PATH)
 	* Vérifiez sur votre Terminal/CMD que tous ses programmes se lance correctement avant de lancer les serveurs (python3/python en version 3 et non 2, gcc, g++, javac)
 
+	* Pour des instructions détaillées sur l'installation des pré-requis selon votre système (Arch Linux, Fedora, Ubuntu/Debian, macOS, Windows), consultez [la documentation complète](INSTALL.md).
+
 🔧 -Installation- :
 
 	* 🏠 Clonez ce dépôt :
