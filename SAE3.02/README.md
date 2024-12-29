@@ -1,6 +1,6 @@
-🛠️ Projet : Cluster de Calcul avec du Load-Balancing
+							🛠️ Projet : Cluster de Calcul avec du Load-Balancing
 
-							🎥 - Démonstration - : 
+🎥 - Démonstration - : 
 	
  ▶️ - [Regarder la vidéo](https://drive.google.com/file/d/1bKXcfdShKR9zl6xLlGAzUsQhfO8umSdE/preview) -
 
