@@ -28,12 +28,12 @@
 
 🔧 -Installation- :
 
-	* Clonez ce dépôt :
+	* 🏠 Clonez ce dépôt :
 	
 	</> $ cd ~
 	</> $ git clone https://github.com/Bastiantkt/Programmation-evenementielle.git
 
-	* Installez les dépendances :
+	* 🛠 Installez les dépendances :
 	
 	</> $ cd ~
 	</> $ cd Programmation-evenementielle/SAE3.02/
