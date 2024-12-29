@@ -17,15 +17,15 @@
 	* Répartition dynamique de la charge.
 	* Surveillance des ressources CPU et RAM et Max Programmes.
 	* Robustesse avec gestion des échecs de connexion.
-	* Sécurité renforcée avec chiffrement du header via une clé partagée..
+	* Sécurité renforcée avec chiffrement du header via une clé partagée.
 
 📦 - Pré-requis - :
 
-	* Python 3.8+ (inclus dans le $PATH en python3 pour Unix/Linux/MacOS et python pour Windows avec le python-3.12.8-amd64.exe Win32 ou python3/python avec le Microsoft Store)
-	* PIP si il n'est pas inclut dans python avec https://bootstrap.pypa.io/get-pip.py puis python3/python get-pip.py
-	* Modules : voir requirements.txt
-	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (javac) inclus dans le $PATH)
-	* Vérifiez sur votre Terminal/CMD que tous ses programmes se lance correctement avant de lancer les serveurs (python3/python en version 3 et non 2, gcc, g++, javac)
+	* Python 3.8+ (inclus dans le $PATH en python3 pour Unix/Linux/MacOS et python pour Windows avec le python-3.12.8-amd64.exe Win32 ou python3/python avec le Microsoft Store).
+	* PIP si il n'est pas inclut dans python avec https://bootstrap.pypa.io/get-pip.py puis python3/python get-pip.py.
+	* Modules : voir requirements.txt.
+	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (javac) inclus dans le $PATH).
+	* Vérifiez sur votre Terminal/CMD que tous ses programmes se lance correctement avant de lancer les serveurs (python3/python en version 3 et non 2, gcc, g++, javac).
 
 ⚠️ * Pour des instructions détaillées sur l'installation des pré-requis selon votre système (Arch Linux, Fedora, Ubuntu/Debian, macOS, Windows), consultez [la documentation complète](INSTALL.md).
 
@@ -86,7 +86,7 @@
 	</> $ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	</> $ python3 client.py
 
-	⚠️ : Login : "Vide" / Mot de Passe : "Vide" (Pour les TESTS)
+	⚠️ : Login : "Vide" / Mot de Passe : "Vide" (Pour les TESTS).
 
 -------------------------------------------------------------------------------------------------------------------------------
 					                       📷 - Image - :
