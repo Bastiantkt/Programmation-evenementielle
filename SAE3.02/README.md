@@ -1,4 +1,4 @@
-Projet : Cluster de Calcul Distribué
+Projet : Cluster de Calcul avec du Load-Balancing
 
 Description
 Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge.
@@ -8,8 +8,9 @@ Fonctionnalités:
 	* Gestion des clients multiples via une interface graphique.
 	* Compilation et exécution de programmes en Python, Java, C et C++.
 	* Répartition dynamique de la charge.
-	* Surveillance des ressources CPU et RAM.
+	* Surveillance des ressources CPU et RAM et Max Programmes.
 	* Robustesse avec gestion des échecs de connexion.
+	* Sécurité renforcée avec chiffrement du header via une clé partagée..
 
 Pré-requis:
 
