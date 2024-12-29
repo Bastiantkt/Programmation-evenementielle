@@ -30,22 +30,22 @@
 
 	* Clonez ce dépôt :
 	
-	$ cd ~
-	$ git clone https://github.com/Bastiantkt/Programmation-evenementielle.git
+	</> $ cd ~
+	</> $ git clone https://github.com/Bastiantkt/Programmation-evenementielle.git
 
 	* Installez les dépendances :
 	
-	$ cd ~
-	$ cd Programmation-evenementielle/SAE3.02/
-	$ pip install -r requirements.txt --break-system-packages
+	</> $ cd ~
+	</> $ cd Programmation-evenementielle/SAE3.02/
+	</> $ pip install -r requirements.txt --break-system-packages
 
 🚀 -Démarrage- :
 
-	* -Serveur Maître- :
+	* 🌐 -Serveur Maître- :
 	
-	$ cd ~
-	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
-	$ python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage>
+	</> $ cd ~
+	</> $ cd Programmation-evenementielle/SAE3.02/SERVEUR/
+	</> $ python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage>
 
 -------------------------------------------------------------------------------------------------------------------------------
 
@@ -60,11 +60,11 @@
 
 -------------------------------------------------------------------------------------------------------------------------------
 	
-	* -Serveur Secondaire- :
+	* 🌐 -Serveur Secondaire- :
 	
-	$ cd ~
-	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
-	$ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
+	</> $ cd ~
+	</> $ cd Programmation-evenementielle/SAE3.02/SERVEUR/
+	</> $ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
 						    
 -------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,11 +79,11 @@
 
 -------------------------------------------------------------------------------------------------------------------------------
 						    
-	* -Client- :
+	* 🖥 -Client- :
 	
-	$ cd ~
-	$ cd Programmation-evenementielle/SAE3.02/CLIENT/
-	$ python3 client.py
+	</> $ cd ~
+	</> $ cd Programmation-evenementielle/SAE3.02/CLIENT/
+	</> $ python3 client.py
 
 -------------------------------------------------------------------------------------------------------------------------------
 					                       📷 -Image- :
