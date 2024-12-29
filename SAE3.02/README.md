@@ -43,10 +43,12 @@
 
 	* Serveur Secondaire :
 	// python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage> //
+						    
+						    Placeholder_Screenshot
 	
 ⚠️ Exemple : python3 serveur_secondaire.py 12346 2 50 50
 
-						    Placeholder_Screenshot
+						    
 
 	* Client :
 	// python3 client.py //
