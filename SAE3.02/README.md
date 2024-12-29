@@ -1,8 +1,8 @@
 🛠️ Projet : Cluster de Calcul avec du Load-Balancing
 
-									🎥 Démonstration : 
+							🎥 Démonstration : 
 
-									Placeholder_Video.mp4
+							Placeholder_Video.mp4
 
 📜 Description :
 
