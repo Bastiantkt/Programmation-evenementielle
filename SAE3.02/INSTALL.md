@@ -28,12 +28,12 @@
     GCC et G++ (avec MinGW) :
 
     Téléchargez MinGW sur : https://sourceforge.net/projects/mingw/
-    Ajoutez le répertoire bin de MinGW à la variable d'environnement PATH.
+    Ajoutez le répertoire bin de MinGW à la variable d'environnement PATH : C:\MinGW\bin.
 
     OpenJDK (pour javac) :
 
-    Téléchargez l'installateur OpenJDK depuis : https://aka.ms/download-jdk/microsoft-jdk-21.0.5-windows-aarch64.msi
-    Ajoutez le chemin d'installation à la variable PATH
+    Téléchargez l'installateur OpenJDK depuis : https://download.oracle.com/java/23/latest/jdk-23_windows-x64_bin.exe
+    Ajoutez le chemin d'installation à la variable PATH si ce n'est pas déjà fait : C:\Program Files\Common Files\Oracle\Java\javapath\
 
 🔧 Vérifiez les versions et que les programmes sont bien installé dans le $PATH : 
 
