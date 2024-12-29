@@ -34,6 +34,7 @@
 🚀 -Démarrage- :
 
 	* Serveur Maître :
+	
 	// python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage> //
 
 						       Placeholder_Screenshot
@@ -42,6 +43,7 @@
 
 -------------------------------------------------------------------------------------------------------------------------------
 	* Serveur Secondaire :
+	
 	// python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage> //
 						    
 						      Placeholder_Screenshot
@@ -51,6 +53,7 @@
 -------------------------------------------------------------------------------------------------------------------------------
 						    
 	* Client :
+	
 	// python3 client.py //
 
 						      Placeholder_Screenshot
