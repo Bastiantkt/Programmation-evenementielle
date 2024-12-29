@@ -62,6 +62,7 @@
 	$ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
 						    
 -------------------------------------------------------------------------------------------------------------------------------
+
 					                       📷 -Image- :
 <p align="center"> 
 <img src="IMAGES/Screenshot3.png" alt="Aperçu de l'application" width="500">
