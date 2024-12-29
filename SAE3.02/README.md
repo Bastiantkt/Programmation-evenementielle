@@ -38,7 +38,7 @@
 	
 ⚠️ Example : python3 serveur.py 12345 '127.0.0.1,192.168.1.2' '12346,12347;12348,12349' 2 50 80
 
-						Placeholder_Screenshot
+						    Placeholder_Screenshot
 
 
 	* Serveur Secondaire :
@@ -46,11 +46,11 @@
 	
 ⚠️ Exemple : python3 serveur_secondaire.py 12346 2 50 50
 
-						Placeholder_Screenshot
+						    Placeholder_Screenshot
 
 	* Client :
 	// python3 client.py //
 
-						Placeholder_Screenshot
+						    Placeholder_Screenshot
 
 	
