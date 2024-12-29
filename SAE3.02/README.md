@@ -79,7 +79,7 @@
 	$ python3 client.py
 
 -------------------------------------------------------------------------------------------------------------------------------
-					                      📷 -Image- :
+					                       📷 -Image- :
 <p align="center">  
   <img src="IMAGES/Screenshot4.png" alt="Image 1" width="500">
   <img src="IMAGES/Screenshot1.png" alt="Image 2" width="500">
