@@ -6,7 +6,7 @@
 
 📜 -Description- :
 
-// Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge. //
+	// Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge. //
 
 -💡 Fonctionnalités- :
 
