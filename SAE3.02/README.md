@@ -81,7 +81,8 @@
 -------------------------------------------------------------------------------------------------------------------------------
 					                  📷 -Image- :
 <p align="center">  
-<img src="IMAGES/Screenshot1.png" alt="Aperçu de l'application" width="400">
+  <img src="IMAGES/Screenshot1.png" alt="Image 1" width="300">
+  <img src="IMAGES/Screenshot4.png" alt="Image 2" width="300">
 </p>
 
 
