@@ -86,6 +86,8 @@
 	</> $ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	</> $ python3 client.py
 
+	⚠️ : Login : "Vide" / Mot de Passe : "Vide" (Pour les TESTS)
+
 -------------------------------------------------------------------------------------------------------------------------------
 					                       📷 - Image - :
 <p align="center">  
