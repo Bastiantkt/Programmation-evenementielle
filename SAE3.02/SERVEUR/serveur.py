@@ -258,7 +258,7 @@ def gestion_file_attente():
                     except (socket.error, BrokenPipeError) as e:
                         logging.warning(f"Erreur lors de la tentative de mise en attente pour {adresse_client} : {e}")
                         continue
-                time.sleep(1)  # Répéter après un délai
+                time.sleep(1)  
                 request_queue.put((socket_client, adresse_client, programme, header_data))
         except Exception as e:
             logging.error(f"Erreur dans la gestion de la file d'attente pour {adresse_client} : {e}")
