@@ -26,10 +26,14 @@
 🔧 -Installation- :
 
 	* Clonez ce dépôt :
-	// git clone <lien_du_dépôt> //
+	
+	$ cd ~
+	$ git clone https://github.com/Bastiantkt/Programmation-evenementielle.git
 
 	* Installez les dépendances :
-	// pip install -r requirements.txt //
+	
+	$ cd Programmation-evenementielle/SAE3.02/
+	$ pip install -r requirements.txt
 
 🚀 -Démarrage- :
 
