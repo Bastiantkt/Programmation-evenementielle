@@ -22,7 +22,7 @@
 
 	* Python 3.8+ (inclus dans le $PATH en python3 pour Unix/Linux/MacOS et python pour Windows avec le python-3.12.8-amd64.exe Win32 ou python3/python avec le Microsoft Store)
 	* Modules : voir requirements.txt
-	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (Javac) inclus dans le $PATH)
+	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (javac) inclus dans le $PATH)
 
 🔧 -Installation- :
 
