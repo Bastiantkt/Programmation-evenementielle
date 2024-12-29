@@ -17,6 +17,23 @@
     </> $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     </> $ brew install python gcc openjdk
 
+🪟 - Windows - :
+
+    Python : 
+
+    Téléchargez l'installateur Python depuis : python.org ou sur le Microsoft Store (Windows 10 et 11).
+    Pendant l'installation, cochez l'option "Add Python to PATH".
+    
+    GCC et G++ (avec MinGW) :
+
+    Téléchargez MinGW sur : https://sourceforge.net/projects/mingw/
+    Ajoutez le répertoire bin de MinGW à la variable d'environnement PATH.
+
+    OpenJDK (pour javac) :
+
+    Téléchargez l'installateur OpenJDK depuis : https://aka.ms/download-jdk/microsoft-jdk-21.0.5-windows-aarch64.msi
+    Ajoutez le chemin d'installation à la variable PATH
+
 🔧 Vérifiez les versions et que les programmes sont bien installé dans le $PATH : 
 
     </> $ python --version (version 3)
