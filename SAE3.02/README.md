@@ -21,8 +21,10 @@
 📦 -Pré-requis- :
 
 	* Python 3.8+ (inclus dans le $PATH en python3 pour Unix/Linux/MacOS et python pour Windows avec le python-3.12.8-amd64.exe Win32 ou python3/python avec le Microsoft Store)
+	* PIP si il n'est pas inclut dans python avec https://bootstrap.pypa.io/get-pip.py puis python3/python get-pip.py
 	* Modules : voir requirements.txt
 	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (javac) inclus dans le $PATH)
+	* Vérifiez sur votre Terminal/CMD que tous ses programmes se lance correctement avant de lancer les serveurs (python3/python en version 3 et non 2, gcc, g++, javac)
 
 🔧 -Installation- :
 
@@ -33,8 +35,9 @@
 
 	* Installez les dépendances :
 	
+	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/
-	$ pip install -r requirements.txt
+	$ pip install -r requirements.txt --break-system-packages
 
 🚀 -Démarrage- :
 
