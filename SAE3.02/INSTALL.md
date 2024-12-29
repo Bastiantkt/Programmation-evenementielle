@@ -23,6 +23,7 @@
 
     Téléchargez l'installateur Python depuis : python.org ou sur le Microsoft Store (Windows 10 et 11).
     Pendant l'installation, cochez l'option "Add Python to PATH".
+    Puis installez pip : https://bootstrap.pypa.io/get-pip.py puis python3/python get-pip.py
     
     GCC et G++ (avec MinGW) :
 
