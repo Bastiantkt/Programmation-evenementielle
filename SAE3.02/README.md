@@ -22,7 +22,7 @@
 
 	* Python 3.8+
 	* Modules : voir requirements.txt
-	* Compilateurs pour C et C++ (GCC, G++
+	* Compilateurs pour C et C++ et Java (GCC, G++, OpenJDK-Devel (Javac) inclus dans le $PATH)
 
 🔧 -Installation- :
 
