@@ -47,7 +47,7 @@
 -------------------------------------------------------------------------------------------------------------------------------
 					                  📷 -Image- :
 <p align="center"> 
-<img src="IMAGES/Screenshot2.png" alt="Aperçu de l'application" width="400">
+<img src="IMAGES/Screenshot2.png" alt="Aperçu de l'application" width="400" style="border-radius: 15px;">
 </p>
 -------------------------------------------------------------------------------------------------------------------------------	
 
@@ -64,7 +64,7 @@
 -------------------------------------------------------------------------------------------------------------------------------
 					                  📷 -Image- :
 <p align="center"> 
-<img src="IMAGES/Screenshot3.png" alt="Aperçu de l'application" width="400">
+<img src="IMAGES/Screenshot3.png" alt="Aperçu de l'application" width="400" style="border-radius: 15px;">
 </p>
 -------------------------------------------------------------------------------------------------------------------------------	
 
@@ -81,7 +81,7 @@
 -------------------------------------------------------------------------------------------------------------------------------
 					                  📷 -Image- :
 <p align="center">  
-<img src="IMAGES/Screenshot1.png" alt="Aperçu de l'application" width="400">
+<img src="IMAGES/Screenshot1.png" alt="Aperçu de l'application" width="400" style="border-radius: 15px;">
 </p>
 
 
