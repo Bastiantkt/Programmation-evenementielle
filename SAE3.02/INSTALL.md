@@ -47,8 +47,8 @@
 
 					                       📷 - Image - :
 <p align="center">  
-  <img src="IMAGES/Screenshot5.png" alt="Image 1" width="700">
-  <img src="IMAGES/Screenshot6.png" alt="Image 2" width="700">
+  <img src="IMAGES/Screenshot5.png" alt="Image 1" width="500">
+  <img src="IMAGES/Screenshot6.png" alt="Image 2" width="500">
 </p>
 
 
