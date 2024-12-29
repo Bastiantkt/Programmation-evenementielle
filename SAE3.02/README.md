@@ -9,7 +9,7 @@
 
 	// Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge. //
 
--💡 Fonctionnalités- :
+💡 -Fonctionnalités- :
 
 	* Gestion des clients multiples via une interface graphique.
 	* Compilation et exécution de programmes en Python, Java, C et C++.
@@ -18,7 +18,7 @@
 	* Robustesse avec gestion des échecs de connexion.
 	* Sécurité renforcée avec chiffrement du header via une clé partagée..
 
--📦 Pré-requis- :
+📦 -Pré-requis- :
 
 	* Python 3.8+
 	* Modules : voir requirements.txt
@@ -38,7 +38,7 @@
 
 🚀 -Démarrage- :
 
-	* Serveur Maître :
+	* -Serveur Maître- :
 	
 	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
@@ -46,11 +46,11 @@
 
 ![Aperçu de l'application](images/screenshot1.png)
 -------------------------------------------------------------------------------------------------------------------------------	
-	⚠️ Example : $ python3 serveur.py 12345 '127.0.0.1,192.168.1.2' '12346,12347;12348,12349' 2 50 80
+	⚠️ -Example- : $ python3 serveur.py 12345 '127.0.0.1,192.168.1.2' '12346,12347;12348,12349' 2 50 80
 
 -------------------------------------------------------------------------------------------------------------------------------
 	
-	* Serveur Secondaire :
+	* -Serveur Secondaire- :
 	
 	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
@@ -58,18 +58,18 @@
 						    
 ![Aperçu de l'application](images/creenshot1.png)
 -------------------------------------------------------------------------------------------------------------------------------	
-	⚠️ Exemple : $ python3 serveur_secondaire.py 12346 2 50 50
+	⚠️ -Exemple- : $ python3 serveur_secondaire.py 12346 2 50 50
 
 -------------------------------------------------------------------------------------------------------------------------------
 						    
-	* Client :
+	* -Client- :
 	
 	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	$ python3 client.py
 
 -------------------------------------------------------------------------------------------------------------------------------
-					                📷 Image :
+					                  📷 -Image- :
  
 ![Aperçu de l'application](IMAGES/Screenshot1.png)
 
