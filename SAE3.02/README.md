@@ -45,7 +45,7 @@
 	$ python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage>
 
 -------------------------------------------------------------------------------------------------------------------------------
-					                  📷 -Image- :
+					                       📷 -Image- :
 <p align="center"> 
 <img src="IMAGES/Screenshot2.png" alt="Aperçu de l'application" width="500">
 </p>
@@ -62,7 +62,7 @@
 	$ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
 						    
 -------------------------------------------------------------------------------------------------------------------------------
-					                  📷 -Image- :
+					                       📷 -Image- :
 <p align="center"> 
 <img src="IMAGES/Screenshot3.png" alt="Aperçu de l'application" width="500">
 </p>
@@ -79,7 +79,7 @@
 	$ python3 client.py
 
 -------------------------------------------------------------------------------------------------------------------------------
-					                  📷 -Image- :
+					                      📷 -Image- :
 <p align="center">  
   <img src="IMAGES/Screenshot4.png" alt="Image 1" width="500">
   <img src="IMAGES/Screenshot1.png" alt="Image 2" width="500">
