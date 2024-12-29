@@ -44,7 +44,7 @@
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
 	$ python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage>
 
-						       Placeholder_Screenshot
+![Aperçu de l'application](images/screenshot1.png)
 -------------------------------------------------------------------------------------------------------------------------------	
 	⚠️ Example : $ python3 serveur.py 12345 '127.0.0.1,192.168.1.2' '12346,12347;12348,12349' 2 50 80
 
@@ -56,7 +56,7 @@
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
 	$ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
 						    
-						      Placeholder_Screenshot
+![Aperçu de l'application](images/creenshot1.png)
 -------------------------------------------------------------------------------------------------------------------------------	
 	⚠️ Exemple : $ python3 serveur_secondaire.py 12346 2 50 50
 
@@ -68,6 +68,7 @@
 	$ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	$ python3 client.py
 
-						      Placeholder_Screenshot
+![Aperçu de l'application](images/Screenshot1.png)
+
 
 	
