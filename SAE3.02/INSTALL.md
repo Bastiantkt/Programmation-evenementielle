@@ -1,4 +1,4 @@
-					                       🔧 - Instructions détaillées d'installation -	
+					                  🔧 - Instructions détaillées d'installation -	
 
 🐧 - Arch Linux - : 
 
