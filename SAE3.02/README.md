@@ -1,9 +1,10 @@
-Projet : Cluster de Calcul avec du Load-Balancing
+🛠️ Projet : Cluster de Calcul avec du Load-Balancing
 
-Description
-Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge.
+📜 Description :
 
-Fonctionnalités:
+// Ce projet met en œuvre une architecture multi-serveurs permettant de compiler et d'exécuter des programmes soumis par des clients. Le serveur maître gère les connexions et distribue les tâches aux serveurs secondaires pour équilibrer la charge. //
+
+💡 Fonctionnalités :
 
 	* Gestion des clients multiples via une interface graphique.
 	* Compilation et exécution de programmes en Python, Java, C et C++.
@@ -12,13 +13,13 @@ Fonctionnalités:
 	* Robustesse avec gestion des échecs de connexion.
 	* Sécurité renforcée avec chiffrement du header via une clé partagée..
 
-Pré-requis:
+📦 Pré-requis :
 
 	* Python 3.8+
 	* Modules : voir requirements.txt
 	* Compilateurs pour C et C++ (GCC, G++
 
-Installation:
+🔧 Installation :
 
 	* Clonez ce dépôt :
 	// git clone <lien_du_dépôt> //
@@ -26,7 +27,7 @@ Installation:
 	* Installez les dépendances :
 	// pip install -r requirements.txt //
 
-Démarrage:
+🚀 Démarrage :
 
 	* Serveur Maître :
 	// python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage> //
