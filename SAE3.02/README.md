@@ -68,7 +68,9 @@
 	$ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	$ python3 client.py
 
-	![Aperçu de l'application](IMAGES/Screenshot1.png)
+	📷 Image :
+ 
+![Aperçu de l'application](IMAGES/Screenshot1.png)
 
 
 	
