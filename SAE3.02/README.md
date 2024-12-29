@@ -66,6 +66,7 @@
 <p align="center"> 
 <img src="IMAGES/Screenshot3.png" alt="Aperçu de l'application" width="500">
 </p>
+
 -------------------------------------------------------------------------------------------------------------------------------	
 
 	⚠️ -Exemple- : $ python3 serveur_secondaire.py 12346 2 50 50
