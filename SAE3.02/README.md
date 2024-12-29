@@ -39,6 +39,7 @@
 
 	* Serveur Maître :
 	
+	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
 	$ python3 serveur.py <port_maitre> '<ips_autres>' '<ports_autres>' <max_programmes> <max_cpu_usage> <max_ram_usage>
 
@@ -50,6 +51,7 @@
 	
 	* Serveur Secondaire :
 	
+	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/SERVEUR/
 	$ python3 serveur_secondaire.py <port> <max_programmes> <max_cpu_usage> <max_ram_usage>
 						    
@@ -61,6 +63,7 @@
 						    
 	* Client :
 	
+	$ cd ~
 	$ cd Programmation-evenementielle/SAE3.02/CLIENT/
 	$ python3 client.py
 
