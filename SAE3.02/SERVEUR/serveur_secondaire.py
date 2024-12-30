@@ -188,8 +188,6 @@ def sauvegarde_execution(socket_maitre, language_code, fichier, programme):
     finally:
         socket_maitre.sendall(b"") 
 
-
-
 # ------------
 # -FONCTION RENVOIE DU RESULTAT-
 # ------------
