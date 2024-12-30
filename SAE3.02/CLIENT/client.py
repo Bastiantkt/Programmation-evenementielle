@@ -151,11 +151,19 @@ class Interface_Application(QtWidgets.QWidget):
 
         self.thread.start()
 
+# ------------
+# -FONCTION METTRE A JOUR LE RESULTAT SUR LA GUI-
+# ------------
+
     def mettre_a_jour_resultat(self, data):
         existing_text = "\n".join(line.strip() for line in self.resultat_text.toPlainText().splitlines())
         if data.strip() not in existing_text:
             self.resultat_text.append(data.strip())
             self.resultat_text.ensureCursorVisible()
+
+# ------------
+# -FONCTION STOP-
+# ------------
 
     def arret(self):
         self.envoie_button.setEnabled(True)
