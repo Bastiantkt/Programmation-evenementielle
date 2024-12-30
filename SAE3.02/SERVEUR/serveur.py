@@ -106,7 +106,45 @@ def delegation_serveurs_autres(socket_client, adresse_client, language_code, tai
     except Exception as e:
         logging.warning(f"Délégation échouée vers {ip_serveur}:{port_serveur} - {e}")
         return False
+    
+# ------------
+# -RECUPERATION DE L'ETAT DES SERVEURS-
+# ------------
 
+def stauts_serveurs(ip, port):
+    try:
+        with socket.create_connection((ip, port), timeout=2) as s:
+            s.sendall("STATUS".encode())
+            response = s.recv(1024).decode()
+            parts = dict(item.split(":") for item in response.split("/"))
+            charge = int(parts["CHARGE"])
+            max_programmes = int(parts["MAX_PROGRAMMES"])
+            return charge, max_programmes
+    except Exception as e:
+        logging.warning(f"Impossible de récupérer l'état du serveur {ip}:{port} - {e}")
+        return float('inf'), None
+
+# ------------
+# -CHOIX DU MEILLEUR SERVEUR-
+# ------------
+
+def choisir_meilleur_serveur():
+    charges = {}
+    for ip, port in SERVEUR_AUTRES:
+        charge, max_programmes = stauts_serveurs(ip, port)
+        if max_programmes and charge < max_programmes:
+            charges[(ip, port)] = charge
+    return min(charges, key=charges.get) if charges else None
+
+# ------------
+# -GESTION DELEGATION AUX SERVEURS AUTRES-
+# ------------
+
+active_programs = 0
+
+def delegation_programme():
+    global active_programs
+    return (active_programs < MAX_PROGRAMMES and psutil.cpu_percent(interval=1) < MAX_CPU_USAGE and psutil.virtual_memory().percent < MAX_RAM_USAGE)
 
 
 # ------------
@@ -176,29 +214,6 @@ def execution_programme(language_code, fichier, adresse_client, programme=None):
 # -GESTION CLIENT / RECEPTION PROGRAMME / ENVOIE RESULTAT-
 # ------------
 
-
-def stauts_serveurs(ip, port):
-    try:
-        with socket.create_connection((ip, port), timeout=2) as s:
-            s.sendall("STATUS".encode())
-            response = s.recv(1024).decode()
-            parts = dict(item.split(":") for item in response.split("/"))
-            charge = int(parts["CHARGE"])
-            max_programmes = int(parts["MAX_PROGRAMMES"])
-            return charge, max_programmes
-    except Exception as e:
-        logging.warning(f"Impossible de récupérer l'état du serveur {ip}:{port} - {e}")
-        return float('inf'), None
-
-
-def choisir_meilleur_serveur():
-    charges = {}
-    for ip, port in SERVEUR_AUTRES:
-        charge, max_programmes = stauts_serveurs(ip, port)
-        if max_programmes and charge < max_programmes:
-            charges[(ip, port)] = charge
-    return min(charges, key=charges.get) if charges else None
-
 def gestion_client(socket_client, adresse_client):
     fichier = None
     try:
@@ -230,6 +245,9 @@ def gestion_client(socket_client, adresse_client):
         if fichier:
             nettoyage(None, fichier)
 
+# ------------
+# -GESTION FILE D'ATTENTE DU SERVEUR MAITRE-
+# ------------
 
 request_queue = Queue()
 
@@ -280,17 +298,6 @@ def prepare_fichier(language_code, programme, adresse_client):
         if not match: raise ValueError("Nom de classe Java introuvable")
         return f"{match.group(1)}.java"
     return f"programme_client_{adresse_client[1]}_{threading.get_ident()}.{language_code}"
-
-# ------------
-# -GESTION DELEGATION AUX SERVEURS AUTRES-
-# ------------
-
-active_programs = 0
-
-def delegation_programme():
-    global active_programs
-    return (active_programs < MAX_PROGRAMMES and psutil.cpu_percent(interval=1) < MAX_CPU_USAGE and psutil.virtual_memory().percent < MAX_RAM_USAGE)
-
 
 # ------------
 # -GESTION SAUVEGARDE / LANCEMENT PROGRAMME-
