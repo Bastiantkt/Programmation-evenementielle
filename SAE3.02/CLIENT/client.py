@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 # -VARIABLE CLE SECRETE-
 # ------------
 
-SECRET_KEY = "cle_secrete_IUT_COLMAR"
+SECRET_KEY = "cle_secrete"
 
 # ------------
 # -FONCTION CHARGER LE CSS-
