@@ -59,7 +59,7 @@ MAX_RAM_USAGE = int(sys.argv[4])
 # -VARIABLE CLE SECRETE-
 # ------------
 
-SECRET_KEY = "cle_secrete_IUT_COLMAR"
+SECRET_KEY = "cle_secrete"
 
 # ------------
 # -FONCTION COMPILATION / EXECUTION PROGRAMME-
