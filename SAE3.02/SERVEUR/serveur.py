@@ -61,7 +61,7 @@ PORT_MAITRE = int(sys.argv[1])
 # -VARIABLE CLE SECRETE-
 # ------------
 
-SECRET_KEY = "cle_secrete_IUT_COLMAR"
+SECRET_KEY = "cle_secrete"
 
 # ------------
 # -ARGUMENTS ADRESSES IP / PORT DES SERVEURS AUTRES-
